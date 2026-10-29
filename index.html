@@ -1,7 +1,7 @@
 <!--
-项目主页：https://github.com/app1emint/mintphone-taesan
+项目主页：https://github.com/app1emint/mintphone
 小红书：6956837599
-UI由【app1emint】设计 
+UI由【app1emint】设计
 允许二改、学习分享 二次分发请保留署名与协议
 -->
 <!DOCTYPE html>
@@ -10,7 +10,13 @@ UI由【app1emint】设计
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
 <title>mintphone-taesan</title>
-<link rel="manifest" href="./manifest.json">
+
+<!-- 💡 PWA 配置开始 -->
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#000000">
+<link rel="apple-touch-icon" href="https://s1.imagehub.cc/images/2026/10/30/386e0729209eee7c79567ddf1dda167d.jpg">
+<!-- 💡 PWA 配置结束 -->
+
 <style>
     * {
         margin: 0;
@@ -1537,6 +1543,16 @@ UI由【app1emint】设计
 </div><!-- /.phone -->
 
 <script>
+    // ================= PWA 注册 =================
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('sw.js')
+                .then(registration => console.log('PWA SW Registered'))
+                .catch(err => console.log('PWA SW registration failed', err));
+        });
+    }
+
+    // ================= 时间模块 =================
     const timeBox = document.getElementById("timeBox");
     const dateBox = document.getElementById("dateBox");
     const weekArr = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
