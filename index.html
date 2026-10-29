@@ -1,0 +1,3221 @@
+<!--
+项目主页：https://github.com/app1emint/mintphone
+小红书：6956837599
+UI由【app1emint】设计 
+允许二改、学习分享 二次分发请保留署名与协议
+-->
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+<title>mintphone-taesan</title>
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        -webkit-font-smoothing: antialiased;
+    }
+
+    html, body {
+        height: 100%;
+        width: 100%;
+        background: #000;
+    }
+
+    body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        overflow: hidden;
+        background: #1a1a1a;
+    }
+
+    /* 全屏桌面容器 */
+    .phone {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        max-width: 100%;
+        max-height: 100%;
+        background: #000;
+        overflow: hidden;
+        padding: calc(env(safe-area-inset-top) + 20px) 20px calc(env(safe-area-inset-bottom) + 20px);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .desktop-scroll {
+        width: 100%;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+    }
+    .desktop-scroll::-webkit-scrollbar { display: none; }
+
+    .top-info { text-align: center; width: 100%; flex-shrink: 0; }
+    .time { font-size: 44px; font-weight: 800; color: #ffffff; letter-spacing: 1px; }
+    .date { font-size: 14px; color: #bbbbbb; margin-top: 2px; }
+    .greeting { font-size: 13px; color: #999999; margin-top: 6px; }
+
+    .profile-card {
+        width: 100%; margin-top: 24px; border-radius: 28px; overflow: hidden;
+        background: #ffffff; display: flex; flex-direction: column; position: relative;
+        box-shadow: 0 8px 24px rgba(255, 255, 255, 0.06); flex-shrink: 0;
+    }
+
+    .card-top {
+        width: 100%; height: 140px; position: relative;
+        background-image: url("https://s1.imagehub.cc/images/2026/10/26/5b0650ba84198378d37adff796a07a99.png");
+        background-size: cover; background-position: center; background-color: #e9e9ec; flex-shrink: 0;
+    }
+
+    .avatar {
+        width: 82px; height: 82px; border-radius: 50%; object-fit: cover;
+        background-color: #eee; border: 4px solid #fff;
+        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
+        position: absolute; left: 50%; top: 100%; transform: translate(-50%, -50%); z-index: 3;
+    }
+
+    .card-bottom { background: #ffffff; padding: 58px 16px 20px; text-align: center; position: relative; flex: 1; }
+    .card-bottom::after {
+        content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 40px;
+        background: linear-gradient(to bottom, rgba(255,255,255,0) 0%, rgba(255,255,255,0.6) 60%, rgba(255,255,255,1) 100%);
+        pointer-events: none;
+    }
+
+    .name { font-size: 20px; font-weight: 700; color: #222; }
+    .sign { font-size: 14px; color: #555; margin-top: 4px; }
+    .emo-text { font-size: 16px; margin-top: 4px; }
+    .location { font-size: 13px; color: #777; margin-top: 10px; }
+
+    .middle-grid { margin-top: 18px; width: 100%; display: grid; grid-template-columns: 1fr 1fr; gap: 14px; flex-shrink: 0; }
+    .left-box, .right-apps { background: #1a1a1a; border-radius: 26px; padding: 14px; }
+    .left-box { display: flex; align-items: center; justify-content: center; }
+    .left-image { width: 100%; height: 100%; border-radius: 20px; object-fit: cover; background-color: #333; aspect-ratio: 1 / 1; }
+    .right-apps { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 12px; }
+
+    .app-item { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; cursor: pointer; }
+    .app-icon { width: 56px; height: 56px; border-radius: 14px; background: #fff; object-fit: cover; box-shadow: 0 2px 8px rgba(255, 255, 255, 0.06); }
+    .app-name { font-size: 12px; color: #cccccc; }
+
+    .chat-badge-wrap{ position:relative; }
+    .chat-red-dot{
+        position:absolute; top:-6px; right:-6px; min-width:20px; height:20px; padding:0 6px;
+        background:#ff3b30; color:#fff; font-size:12px; font-weight:700; border-radius:10px;
+        display:flex; align-items:center; justify-content:center; border:2px solid #1a1a1a;
+    }
+
+    .bottom-bar {
+        margin-top: 18px; width: 100%; background: #1a1a1a; border-radius: 26px;
+        padding: 16px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;
+        flex-shrink: 0; margin-bottom: 4px;
+    }
+    .bar-item { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; cursor: pointer; }
+    .bar-icon { width: 54px; height: 54px; border-radius: 14px; background: #fff; object-fit: cover; box-shadow: 0 2px 8px rgba(255, 255, 255, 0.06); }
+    .bar-name { font-size: 12px; color: #cccccc; }
+
+    /* ========== 聊天区 ========== */
+    .full-page {
+        position: absolute; inset: 0; background-color: #000000; z-index: 99; display: none;
+        flex-direction: column; padding-top: env(safe-area-inset-top); padding-bottom: env(safe-area-inset-bottom);
+    }
+    .chat-topbar{ display:flex; align-items:center; justify-content: space-between; padding:16px 18px; background:#000; position: relative; }
+    .chat-back{ cursor:pointer; width:32px; flex-shrink:0; fill:#fff;}
+    .chat-name{ position:absolute; left:50%; transform: translateX(-50%); font-size:14px; font-weight:500; color:#ffffff; }
+    .chat-actions{ display:flex; gap:18px; flex-shrink:0; align-items: center;}
+    .chat-content{ flex:1; padding:16px 12px; overflow-y:auto; background:#000; }
+
+    .msg-row-left{ display:flex; align-items:flex-start; gap:6px; margin-bottom:16px; padding-right:38px; }
+    .chat-avatar{ width:44px; height:44px; border-radius:50%; object-fit:cover; flex-shrink:0; }
+    .bubble-wrap-left{ position:relative; max-width:72%; }
+    .msg-bubble-left{
+        background:#333333; color:#fff; padding:10px 14px; border-radius:0 14px 14px 14px;
+        font-size:15px; white-space: pre-line; word-break: keep-all; overflow-wrap: break-word;
+    }
+    .msg-time-left{ font-size:10px; color:#777777; position:absolute; right:-34px; bottom:5px; white-space:nowrap; }
+
+    .msg-row-right{ display:flex; justify-content:flex-end; align-items:flex-end; gap:6px; margin-bottom:16px; padding-left:38px; }
+    .bubble-wrap-right{ position:relative; max-width:72%; }
+    .msg-bubble-right{
+        background:#f9d900; color:#000000; padding:10px 14px; border-radius:14px 0 14px 14px;
+        font-size:16px; white-space: pre-line; word-break: keep-all; overflow-wrap: break-word;
+    }
+    .msg-time-right{ font-size:10px; color:#777777; position:absolute; left:-34px; bottom:5px; white-space:nowrap; }
+
+    /* 聊天图片样式 */
+    .chat-img-bubble {
+        max-width: 100%;
+        border-radius: 12px;
+        display: block;
+    }
+
+    /* Kakao 通话记录样式 */
+    .call-log-left { display: flex; align-items: flex-start; gap: 6px; margin-bottom: 16px; padding-right: 38px; }
+    .call-log-bubble {
+        background: #2b2b2b; color: #fff; padding: 12px 16px; border-radius: 14px;
+        display: flex; align-items: center; gap: 12px; min-width: 140px;
+    }
+    .call-log-bubble.green .call-icon { background: #00c73c; }
+    .call-log-bubble.white .call-icon { background: #fff; }
+    .call-icon {
+        width: 28px; height: 28px; border-radius: 6px; display: flex; align-items: center; justify-content: center;
+    }
+    .call-icon svg { width: 16px; height: 16px; }
+    .call-log-bubble.green .call-icon svg { fill: #fff; }
+    .call-log-bubble.white .call-icon svg { fill: #333; }
+    .call-log-text { font-size: 15px; font-weight: 500; flex: 1; }
+    .call-log-sub { font-size: 12px; color: #aaa; margin-top: 2px; }
+
+    .chat-input-area{ display:flex; align-items:center; gap:10px; padding:14px 18px; background:#000; border-top:1px solid #222; }
+    .plus-btn{ cursor:pointer; fill:#888; }
+    .input-wrap{ flex:1; }
+    .chat-input{ width:100%; background:#222222; border:none; border-radius:24px; padding:12px 16px; outline:none; font-size:14px; color:#fff; }
+    /* 未解锁时不可点击，光标都不显示 */
+    .chat-input[readonly] { cursor: default; caret-color: transparent; color: #888; }
+    .chat-input::placeholder{ color:#888888; }
+    .send-btn{
+        width:40px; height:40px; border-radius:50%; background:#222; color:#fff; border:none; cursor:pointer;
+        display:flex; align-items:center; justify-content:center; fill:#fff;
+    }
+    .send-btn:disabled{ opacity:0.35; cursor:not-allowed; }
+
+    /* ========== 视频来电 & 通话界面 ========== */
+    .call-banner {
+        position: absolute; top: -120px; left: 12px; right: 12px; background: #1c1c1e;
+        border-radius: 28px; padding: 12px 16px; display: flex; align-items: center; gap: 12px;
+        z-index: 150; box-shadow: 0 10px 30px rgba(0,0,0,0.5); transition: top 0.4s cubic-bezier(0.21, 1, 0.34, 1);
+        cursor: pointer;
+    }
+    .call-banner.show { top: calc(env(safe-area-inset-top) + 10px); }
+    .call-banner-left { position: relative; width: 44px; height: 44px; flex-shrink: 0; }
+    .call-banner-avatar { width: 44px; height: 44px; border-radius: 50%; object-fit: cover; }
+    .call-banner-kakao { position: absolute; bottom: -2px; right: -2px; width: 18px; height: 18px; background: #fee500; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 9px; font-weight: bold; color: #3c1e1e; border: 1.5px solid #1c1c1e;}
+    .call-banner-main { flex: 1; min-width: 0; }
+    .call-banner-sub { font-size: 12px; color: #aaa; margin-bottom: 2px; }
+    .call-banner-name { font-size: 15px; font-weight: 600; color: #fff; }
+    .call-banner-actions { display: flex; gap: 10px; }
+    .call-btn-sm { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+    .call-btn-sm svg { width: 18px; height: 18px; fill: #fff; }
+    .call-btn-sm.reject { background: #ff3b30; }
+    .call-btn-sm.accept { background: #007aff; }
+
+    .incoming-call-popup {
+        position: absolute; inset: 0; background: #000; z-index: 200; display: none;
+        flex-direction: column; align-items: center; justify-content: space-between;
+        padding: 120px 40px calc(env(safe-area-inset-bottom) + 60px); color: #fff;
+    }
+    .incoming-info { text-align: center; display: flex; flex-direction: column; align-items: center; gap: 8px;}
+    .incoming-sub { font-size: 16px; color: #ddd; display: flex; align-items: center; gap: 6px; }
+    .incoming-name { font-size: 28px; font-weight: 600; }
+    
+    .incoming-actions { display: flex; justify-content: space-between; width: 100%; max-width: 320px; }
+    .incoming-col { display: flex; flex-direction: column; gap: 40px; align-items: center; }
+    .incoming-btn-wrap { display: flex; flex-direction: column; align-items: center; gap: 10px; cursor: pointer; }
+    .incoming-btn { width: 68px; height: 68px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.15); }
+    .incoming-btn.reject { background: #ff3b30; }
+    .incoming-btn.accept { background: #007aff; }
+    .incoming-btn svg { width: 28px; height: 28px; fill: #fff; }
+    .incoming-btn-text { font-size: 13px; color: #ddd; }
+
+    .video-call-page {
+        position: absolute; inset: 0; background: #000; z-index: 201; display: none; flex-direction: column;
+        color: #fff;
+    }
+    .call-top {
+        padding: calc(env(safe-area-inset-top) + 10px) 20px 10px; display: flex; justify-content: space-between; align-items: flex-start;
+        background: #1c1c1e; position: relative; z-index: 2;
+    }
+    .call-top-left { display: flex; flex-direction: column; gap: 2px; }
+    .call-top-name { font-size: 18px; font-weight: 500; display: flex; align-items: center; gap: 6px; }
+    .call-timer { font-size: 13px; color: #aaa; margin-top: 2px;}
+    .call-top-icons { display: flex; gap: 14px; align-items: center; margin-top: 4px;}
+    .call-top-icons svg { width: 20px; height: 20px; fill: #fff; }
+    
+    .call-main-video {
+        flex: 1; background: #000; position: relative; display: flex; align-items: center; justify-content: center;
+    }
+    .call-pip {
+        position: absolute; top: 20px; right: 16px;
+        width: 105px; height: 145px; border-radius: 12px; overflow: hidden;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.5); background: #222; z-index: 3;
+    }
+    .call-pip img { width: 100%; height: 100%; object-fit: cover; }
+    .call-pip-name {
+        position: absolute; bottom: 6px; left: 50%; transform: translateX(-50%);
+        font-size: 11px; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.8); white-space: nowrap;
+    }
+
+    .call-bottom {
+        padding: 15px 20px calc(env(safe-area-inset-bottom) + 20px); display: flex; justify-content: space-between; align-items: center;
+        background: #1c1c1e; position: relative; z-index: 2;
+    }
+    .call-tool-btn {
+        width: 52px; height: 52px; border-radius: 50%; background: rgba(255,255,255,0.1);
+        display: flex; align-items: center; justify-content: center; cursor: pointer;
+    }
+    .call-tool-btn svg { width: 24px; height: 24px; fill: #fff; }
+    .call-tool-btn.hangup { background: #ff3b30; }
+
+    /* ========== X 全屏界面 ========== */
+    .x-full-page {
+        position: absolute; inset: 0; background-color: #000; z-index: 100; display: none;
+        flex-direction: column; color: #fff; padding-top: env(safe-area-inset-top); padding-bottom: env(safe-area-inset-bottom);
+    }
+    .x-topbar { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; background: #000; border-bottom: 1px solid #1f1f1f; position: relative; }
+    .x-top-left { display: flex; align-items: center; gap: 18px; }
+    .x-back-arrow { cursor: pointer; line-height: 1; fill:#fff;}
+    .x-logo{ position:absolute; left:50%; transform:translateX(-50%); fill:#fff;}
+    .x-avatar-wrap { width: 34px; height: 34px; border-radius: 50%; overflow: hidden; border: 1px solid #222; background: #111; }
+    .x-avatar { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .x-more { cursor: pointer; fill:#fff;}
+    .x-tab-bar{ display:flex; border-bottom:1px solid #1f1f1f; }
+    .x-tab{ flex:1; text-align:center; padding:14px 0; font-size:15px; color:#71767b; position:relative; cursor:pointer; }
+    .x-tab.active{ color:#fff; font-weight:600; }
+    .x-tab.active::after{ content:""; position:absolute; bottom:0; left:50%; transform:translateX(-50%); width:50px; height:4px; background:#1d9bf0; border-radius:99px; }
+    .x-scroll { flex: 1; overflow-y:auto; background: #000; }
+    .empty-tip{ text-align:center; color:#71767b; padding:40px 20px; font-size:14px; }
+    
+    .x-post-home { padding:14px 16px; border-bottom:1px solid #1f1f1f; cursor:pointer; }
+    .x-post-head { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+    .x-post-avatar { width: 36px; height: 36px; border-radius: 50%; object-fit: cover; background: #222; }
+    .x-post-name { font-size: 14px; font-weight: 600; color: #fff; }
+    .x-post-verified { color: #1d9bf0; font-size: 13px; }
+    .x-post-meta { font-size: 13px; color: #71767b; }
+    .x-post-body { font-size: 15px; line-height: 1.45; color: #e7e9ea; margin-bottom: 12px; white-space: pre-line; word-break: keep-all; overflow-wrap: break-word; }
+    .x-post-media{ width:100%; max-height:65vh; border-radius:16px; overflow:hidden; margin-bottom:12px; }
+    .x-post-media img{ width:100%; height:100%; object-fit:cover; display:block; }
+    .x-post-stats { display: flex; justify-content: space-between; max-width: 360px; color: #71767b; font-size: 13px; margin-top: 4px; }
+    .stat-item{ display:flex; align-items:center; gap:6px; }
+    .stat-item svg { fill:#71767b; }
+    
+    .x-bottom-bar { display: flex; align-items: center; justify-content: space-between; padding: 10px 18px; background: #000; border-top: 1px solid #1f1f1f; position: relative; }
+    .x-nav { display: flex; justify-content: space-between; width:100%; color: #fff; fill:#fff;}
+    .x-compose-btn {
+        width: 44px; height: 44px; border-radius: 50%; background: #1d9bf0; color: #fff; border: none; cursor: pointer;
+        display: flex; align-items: center; justify-content: center; position:absolute; right:18px; bottom: calc(env(safe-area-inset-bottom) + 70px); fill:#fff;
+    }
+
+    /* ========== X 发文页面 ========== */
+    .x-compose-page {
+        position: absolute; inset: 0; background: #000; z-index: 102; display: none;
+        flex-direction: column; padding-top: env(safe-area-inset-top); padding-bottom: env(safe-area-inset-bottom); color: #fff;
+        height: 100%;
+    }
+    .x-compose-topbar {
+        display: flex; align-items: center; justify-content: space-between; padding: 12px 16px;
+    }
+    .x-compose-cancel { font-size: 16px; color: #fff; cursor: pointer; }
+    .x-compose-post {
+        background: #1d9bf0; color: #fff; border: none; border-radius: 999px; padding: 8px 18px;
+        font-size: 14px; font-weight: 600; cursor: pointer; opacity: 0.5; pointer-events: none;
+        transition: opacity 0.2s;
+    }
+    .x-compose-post.active { opacity: 1; pointer-events: auto; }
+    
+    .x-compose-body { flex: 1; display: flex; padding: 16px; gap: 12px; overflow: hidden; }
+    .x-compose-avatar { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; flex-shrink: 0; }
+    .x-compose-input-wrap { flex: 1; display: flex; flex-direction: column; height: 100%; }
+    .x-compose-input {
+        flex: 1; width: 100%; background: transparent; border: none; outline: none; color: #fff;
+        font-size: 18px; line-height: 1.5; resize: none; padding-top: 8px; overflow-y: auto;
+    }
+    .x-compose-input::placeholder { color: #71767b; }
+
+    .x-compose-toolbar {
+        display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; border-top: 1px solid #1f1f1f;
+    }
+    .x-compose-reply-perm { font-size: 13px; color: #1d9bf0; display: flex; align-items: center; gap: 6px; cursor: pointer; }
+    .x-compose-actions { display: flex; gap: 16px; }
+    .x-compose-actions svg { width: 20px; height: 20px; fill: none; stroke: #71767b; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+    
+    .x-compose-media-bar {
+        display: flex; justify-content: flex-start; gap: 20px; padding: 10px 16px calc(20px + env(safe-area-inset-bottom)); border-top: 1px solid #1f1f1f;
+    }
+    .x-compose-media-bar svg { width: 22px; height: 22px; fill: none; stroke: #1d9bf0; stroke-width: 1.5; cursor: pointer; }
+
+    /* ========== X 推文详情页 ========== */
+    .x-detail-page{ position:absolute; inset:0; background:#000; z-index:101; display:none; flex-direction:column; padding-top: env(safe-area-inset-top); padding-bottom: env(safe-area-inset-bottom); }
+    .x-detail-top{ display:flex; align-items:center; justify-content: space-between; padding:12px 16px; border-bottom:1px solid #1f1f1f; }
+    .x-detail-top-left{ display:flex; align-items:center; gap:18px; }
+    .x-detail-back{ cursor:pointer; line-height:1; fill:#fff;}
+    .x-detail-title{ font-size:15px; color:#fff; font-weight:600; }
+    .x-detail-more{ cursor:pointer; fill:#fff;}
+    .x-detail-scroll{ flex:1; overflow-y:auto; }
+
+    .x-detail-post{ padding:12px 16px 4px; border-bottom:1px solid #1f1f1f; }
+    .detail-post-head{ display:flex; align-items:flex-start; gap:10px; margin-bottom:10px; }
+    .detail-post-avatar{ width:40px; height:40px; border-radius:50%; object-fit:cover; background:#222; flex-shrink:0; }
+    .detail-post-head-main{ flex:1; min-width:0; }
+    .detail-post-name-row{ display:flex; align-items:center; gap:4px; }
+    .detail-post-name{ font-size:15px; font-weight:700; color:#fff; }
+    .detail-post-id{ font-size:13px; color:#71767b; margin-top:1px; }
+    .follow-btn{ background:#fff; color:#000; border:none; border-radius:999px; padding:5px 14px; font-size:13px; font-weight:600; cursor:pointer; flex-shrink:0; }
+    .detail-more-btn{ cursor:pointer; padding:4px; flex-shrink:0; fill:#71767b;}
+    .detail-post-body{ font-size:16px; line-height:1.45; color:#e7e9ea; margin-bottom:10px; white-space:pre-line; word-break:keep-all; overflow-wrap:break-word; }
+    .detail-post-media{ width:100%; max-height:55vh; border-radius:16px; overflow:hidden; margin-bottom:12px; border:1px solid #2f3336; }
+    .detail-post-media img{ width:100%; height:100%; object-fit:cover; display:block; }
+    .detail-post-meta{ font-size:14px; color:#71767b; margin-bottom:4px; line-height:1.5; }
+    .detail-post-meta .view-count{ color:#71767b; }
+    .detail-post-meta .view-count b{ color:#e7e9ea; font-weight:400; }
+    .detail-post-divider{ height:1px; background:#1f1f1f; margin:12px 0 0; }
+    .detail-post-actions{ display:flex; justify-content:space-around; padding:12px 0 14px; }
+    .detail-action-item{ display:flex; align-items:center; gap:6px; color:#71767b; font-size:13px; cursor:pointer; }
+    .detail-action-item svg{ fill:#71767b; }
+    .detail-action-item.active{ color:#1d9bf0; }
+    .detail-action-item.active svg{ fill:#1d9bf0; }
+
+    .comments-title{ padding:14px 16px; font-size:15px; font-weight:700; color:#fff; border-bottom:1px solid #1f1f1f; }
+    .comment-item{ padding:12px 16px; border-bottom:1px solid #1f1f1f; }
+    .comment-head{ display:flex; align-items:center; gap:8px; margin-bottom:4px; }
+    .comment-avatar{ width:36px; height:36px; border-radius:50%; object-fit:cover; background:#222; }
+    .comment-name{ font-size:14px; font-weight:700; color:#fff; }
+    .comment-id{ font-size:13px; color:#71767b; }
+    .comment-body{ font-size:15px; line-height:1.45; color:#e7e9ea; margin:4px 0 8px 44px; white-space:pre-line; word-break:keep-all; overflow-wrap:break-word; }
+    .comment-reply-row{ display:flex; align-items:center; justify-content:flex-end; gap:22px; margin:4px 0 0 44px; }
+    .comment-reply-btn{ font-size:13px; color:#71767b; cursor:pointer; display:inline-flex; align-items:center; gap:4px; }
+    .comment-reply-btn svg{ fill:#71767b; }
+    .comment-reply-btn:hover{ color:#1d9bf0; }
+    .comment-reply-btn.disabled{ opacity:0.35; cursor:default; }
+    .comment-reply-btn.disabled:hover{ color:#71767b; }
+    .comment-stats{ display:flex; gap:22px; color:#71767b; font-size:12px; }
+    .comment-stat-item{ display:flex; align-items:center; gap:4px; cursor:pointer; }
+    .comment-stat-item svg{ fill:#71767b; }
+    .comment-stat-item.active{ color:#1d9bf0; }
+    .comment-stat-item.active svg{ fill:#1d9bf0; }
+
+    .reply-input-wrap{ padding:10px 14px; border-top:1px solid #2f2f2f; background:#000; display:none; align-items:center; gap:10px; }
+    .reply-input-avatar{ width:32px; height:32px; border-radius:50%; object-fit:cover; background:#222; flex-shrink:0; }
+    .reply-input{ flex:1; background:#222; border:none; border-radius:20px; padding:9px 14px; outline:none; color:#fff; font-size:14px; }
+    .reply-input::placeholder{ color:#71767b; }
+    .reply-send{ background:#1d9bf0; color:#fff; border:none; border-radius:999px; padding:7px 14px; cursor:pointer; font-size:14px; font-weight:600; }
+    .reply-send:disabled{ opacity:0.4; cursor:not-allowed; }
+
+    /* 通知弹窗 */
+    .x-notification-popup{
+        position:absolute; top: -110px; left: 12px; right: 12px; z-index: 105;
+        background: rgba(30,30,30,0.72); backdrop-filter: blur(22px); -webkit-backdrop-filter: blur(22px);
+        border: 1px solid rgba(255,255,255,0.12); border-radius: 16px; padding:12px 14px;
+        display:flex; align-items:center; gap:10px; box-shadow: 0 4px 20px rgba(0,0,0,0.35);
+        opacity:0; transform: translateY(-12px);
+        transition: opacity 0.3s ease, transform 0.3s cubic-bezier(0.21, 1, 0.34, 1), top 0.3s ease;
+        pointer-events:none;
+    }
+    .x-notification-popup.show{ top: calc(env(safe-area-inset-top) + 8px); opacity:1; transform: translateY(0); pointer-events:auto; }
+    .popup-avatar{ width:40px; height:40px; border-radius:50%; object-fit:cover; flex-shrink:0; }
+    .popup-main{ flex:1; min-width:0; }
+    .popup-title{ font-size:13px; color:#ffffff; font-weight:600; margin-bottom:2px; }
+    .popup-text{ font-size:13px; color:#e5e5e7; line-height:1.35; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .popup-close{ color:#b0b0b2; font-size:17px; cursor:pointer; padding:4px 6px; border-radius:8px; transition: background 0.2s ease; }
+    .popup-close:hover{ background:rgba(255,255,255,0.12); }
+
+    .chat-notify-popup{
+        position:absolute; top:-120px; left:10px; right:10px; z-index:106;
+        background:#2f2f2f; border-radius:18px; padding:12px 14px;
+        display:flex; align-items:center; gap:12px; box-shadow:0 6px 24px rgba(0,0,0,0.45);
+        opacity:0; transform:translateY(-14px);
+        transition:opacity .35s ease, transform .35s cubic-bezier(.21,1,.34,1), top .35s ease;
+        cursor:pointer;
+    }
+    .chat-notify-popup.show{ top:calc(env(safe-area-inset-top) + 10px); opacity:1; transform:translateY(0); }
+    .chat-notify-avatar-wrap{ position:relative; flex-shrink:0; width:44px; height:44px; }
+    .chat-notify-avatar{ width:44px; height:44px; border-radius:50%; object-fit:cover; display:block; }
+    .chat-notify-badge{
+        position:absolute; right:-3px; bottom:-3px; width:18px; height:18px; border-radius:6px;
+        background:#fee500; color:#3c1e1e; font-size:9px; font-weight:800;
+        display:flex; align-items:center; justify-content:center; border:1.5px solid #2f2f2f; letter-spacing:-.5px;
+    }
+    .chat-notify-main{ flex:1; min-width:0; }
+    .chat-notify-name{ font-size:13px; font-weight:700; color:#fff; margin-bottom:2px; }
+    .chat-notify-text{ font-size:13px; color:#c9c9c9; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .chat-notify-time{ font-size:11px; color:#8e8e8e; flex-shrink:0; }
+
+    .ig-notify-popup{
+        position:absolute; top:-130px; left:10px; right:10px; z-index:107;
+        background:rgba(40,40,40,0.82); backdrop-filter:blur(24px); -webkit-backdrop-filter:blur(24px);
+        border-radius:20px; padding:12px 14px; display:flex; align-items:flex-start; gap:12px;
+        box-shadow:0 8px 28px rgba(0,0,0,0.5); opacity:0; transform:translateY(-14px);
+        transition:opacity .4s ease, transform .4s cubic-bezier(.21,1,.34,1), top .4s ease;
+    }
+    .ig-notify-popup.show{ top:calc(env(safe-area-inset-top) + 10px); opacity:1; transform:translateY(0); }
+    .ig-icon{
+        width:40px; height:40px; border-radius:11px; flex-shrink:0;
+        background:linear-gradient(45deg,#f9ce34,#ee2a7b,#6228d7);
+        display:flex; align-items:center; justify-content:center;
+    }
+    .ig-icon svg{ width:22px; height:22px; fill:#fff; }
+    .ig-notify-main{ flex:1; min-width:0; }
+    .ig-notify-top{ font-size:12px; color:#c7c7c9; margin-bottom:2px; }
+    .ig-notify-name{ font-size:14px; font-weight:700; color:#fff; margin-bottom:1px; }
+    .ig-notify-text{ font-size:13px; color:#e5e5e7; }
+    .ig-notify-time{ font-size:11px; color:#a8a8ab; flex-shrink:0; }
+
+    .mask { position: absolute; inset: 0; background: rgba(0,0,0,0.75); z-index: 98; display: none; align-items: center; justify-content: center; padding: 20px; padding-top: env(safe-area-inset-top); padding-bottom: env(safe-area-inset-bottom); }
+    .app-window { width: 100%; max-width: 420px; height: 80%; background: #111; border-radius: 24px; overflow: hidden; color:#fff; display: flex; flex-direction: column; }
+    .win-header { display:flex; justify-content: space-between; align-items:center; padding:16px 20px; border-bottom:1px solid #222; }
+    .close-btn { width:28px; height:28px; border-radius:50%; background:#333; display:flex; align-items:center; justify-content:center; cursor:pointer; }
+    .win-body { flex:1; padding:20px; overflow-y:auto; }
+
+    /* ========== Instagram 页面（深色模式） ========== */
+    .ig-full-page{
+        position:absolute; inset:0; background:#000; z-index:108; display:none; flex-direction:column; color:#fff;
+        padding-top:env(safe-area-inset-top); padding-bottom:env(safe-area-inset-bottom);
+    }
+    .ig-feed-topbar{ display:flex; align-items:center; justify-content:space-between; padding:10px 16px; }
+    .ig-feed-logo{ font-size:26px; font-family:'Georgia', serif; font-weight:700; font-style:italic; }
+    .ig-feed-actions{ display:flex; gap:20px; align-items:center; fill:#fff;}
+    
+    .ig-story-row{ display:flex; gap:14px; padding:8px 16px; overflow-x:auto; scrollbar-width:none; }
+    .ig-story-row::-webkit-scrollbar{ display:none; }
+    .ig-story{ display:flex; flex-direction:column; align-items:center; gap:4px; flex-shrink:0; }
+    .ig-story-ring{ width:72px; height:72px; border-radius:50%; background:linear-gradient(45deg,#f9ce34,#ee2a7b,#6228d7); padding:2.5px; position:relative; }
+    .ig-story-ring.ring-gray{ background:#333; }
+    .ig-story-ring img{ width:100%; height:100%; border-radius:50%; object-fit:cover; border:2.5px solid #000; }
+    .ig-story-name{ font-size:11px; color:#fff; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:72px; }
+
+    .ig-feed-scroll{ flex:1; overflow-y:auto; }
+    .ig-feed-post{ padding-bottom:8px; }
+    .ig-feed-post-head{ display:flex; align-items:center; gap:10px; padding:8px 12px; }
+    .ig-feed-post-head img{ width:34px; height:34px; border-radius:50%; object-fit:cover; }
+    .ig-feed-username{ font-size:14px; font-weight:600; flex:1; }
+    .ig-feed-post-img{ width:100%; aspect-ratio:3/4; background:#111; position:relative; }
+    .ig-feed-post-img img{ width:100%; height:100%; object-fit:cover; display:block; }
+    
+    .ig-post-actions{ display:flex; align-items:center; padding:8px 12px; gap:18px; fill:#fff;}
+    .ig-post-actions .save-icon{ margin-left:auto; }
+    .ig-post-likes{ padding:0 16px; font-size:14px; font-weight:600; }
+    .ig-post-caption{ padding:8px 16px 0; font-size:14px; line-height:1.4; }
+    .ig-post-caption b{ font-weight:600; }
+    .ig-post-date{ padding:8px 16px; font-size:12px; color:#8e8e93; }
+
+    .ig-bottom-nav{ display:flex; justify-content:space-around; align-items:center; padding:10px 0; border-top:1px solid #1f1f1f; fill:#fff;}
+    .ig-bottom-nav svg{ width: 26px; height: 26px; fill:#fff; } 
+    .ig-nav-avatar{ width:26px; height:26px; border-radius:50%; object-fit:cover; border:1.5px solid #fff; }
+
+    /* IG 个人主页 */
+    .ig-topbar{ display:flex; align-items:center; justify-content:space-between; padding:12px 16px; }
+    .ig-username{ font-size:20px; font-weight:700; display:flex; align-items:center; gap:4px; }
+    .ig-top-actions{ display:flex; gap:20px; align-items:center; fill:#fff;}
+    .ig-profile-row{ display:flex; align-items:center; padding:8px 16px; gap:24px; }
+    .ig-avatar-ring{ width:86px; height:86px; border-radius:50%; background:linear-gradient(45deg,#f9ce34,#ee2a7b,#6228d7); padding:3px; flex-shrink:0; }
+    .ig-avatar-ring img{ width:100%; height:100%; border-radius:50%; object-fit:cover; border:3px solid #000; }
+    .ig-stats{ flex:1; display:flex; justify-content:space-around; }
+    .ig-stat{ text-align:center; }
+    .ig-stat-num{ font-size:18px; font-weight:700; }
+    .ig-stat-label{ font-size:13px; color:#ccc; }
+    .ig-bio{ padding:4px 16px 0; }
+    .ig-name{ font-size:14px; font-weight:600; }
+    
+    .ig-dashboard{ margin:12px 16px 0; background:#1c1c1e; border-radius:12px; padding:14px; }
+    .ig-dashboard-title{ font-size:14px; font-weight:700; }
+    .ig-dashboard-sub{ font-size:12px; color:#8e8e93; margin-top:2px; }
+    .ig-action-row{ display:flex; gap:8px; padding:12px 16px 0; }
+    .ig-action-btn{ flex:1; background:#1c1c1e; border:none; color:#fff; border-radius:9px; padding:8px 0; font-size:14px; font-weight:600; cursor:pointer; }
+    .ig-action-btn.small{ flex:0 0 40px; display:flex; align-items:center; justify-content:center; fill:#fff;}
+    .ig-tab-bar{ display:flex; margin-top:14px; border-bottom:1px solid #222; }
+    .ig-tab{ flex:1; text-align:center; padding:10px 0; fill:#fff;}
+    .ig-tab.active{ border-bottom:1px solid #fff; }
+    .ig-grid{ flex:1; overflow-y:auto; display:grid; grid-template-columns:1fr 1fr 1fr; gap:1px; background:#222; }
+    .ig-grid-item{ aspect-ratio:1; background:#111; position:relative; cursor:pointer; }
+    .ig-grid-item img{ width:100%; height:100%; object-fit:cover; display:block; }
+    .ig-grid-multi{ position:absolute; top:6px; right:6px; width:22px; height:22px; fill:#fff; filter:drop-shadow(0 1px 2px rgba(0,0,0,0.5)); }
+    
+    /* 置顶标识 */
+    .ig-pin-icon {
+        position: absolute; top: 6px; left: 6px; width: 20px; height: 20px; fill: #fff;
+        filter: drop-shadow(0 1px 2px rgba(0,0,0,0.5));
+    }
+
+    /* IG 帖子详情页 */
+    .ig-post-page{ position:absolute; inset:0; background:#000; z-index:109; display:none; flex-direction:column; color:#fff; padding-top:env(safe-area-inset-top); padding-bottom:env(safe-area-inset-bottom); }
+    .ig-post-scroll{ flex:1; overflow-y:auto; }
+    .ig-post-top{ display:flex; align-items:center; justify-content:space-between; padding:12px 16px; fill:#fff;}
+    .ig-post-top-left{ display:flex; align-items:center; gap:10px; }
+    .ig-post-top img.ig-post-avatar{ width:32px; height:32px; border-radius:50%; object-fit:cover; }
+    .ig-post-username{ font-size:15px; font-weight:600; }
+    .ig-post-image{ width:100%; aspect-ratio:1; background:#111; }
+    .ig-post-image img{ width:100%; height:100%; object-fit:cover; display:block; }
+    .ig-dots{ display:flex; justify-content:center; gap:6px; padding:10px 0 4px; }
+    .ig-dot{ width:6px; height:6px; border-radius:50%; background:#3a3a3a; }
+    .ig-dot.active{ background:#fff; }
+
+    /* ========== IG 评论页（深色模式） ========== */
+    .ig-comments-page {
+        position: absolute; inset: 0; background: #000; z-index: 111; display: none;
+        flex-direction: column; padding-top: env(safe-area-inset-top); padding-bottom: env(safe-area-inset-bottom);
+        color: #fff;
+    }
+    .ig-comments-top {
+        position: relative; display: flex; align-items: center; justify-content: center;
+        padding: 16px; border-bottom: 1px solid #1f1f1f; background: #000;
+    }
+    .ig-comments-top::before {
+        content: ""; position: absolute; top: 8px; left: 50%; transform: translateX(-50%);
+        width: 40px; height: 4px; background: #333; border-radius: 2px;
+    }
+    .ig-comments-back { position: absolute; left: 16px; cursor: pointer; }
+    .ig-comments-title { font-size: 15px; font-weight: 600; margin-top: 8px; color: #fff;}
+    
+    .ig-comments-scroll { flex: 1; overflow-y: auto; padding: 10px 0; }
+    .ig-comment-item { padding: 12px 16px; display: flex; gap: 12px; align-items: flex-start; border-bottom: 1px solid #1f1f1f; cursor: pointer; }
+    .ig-comment-avatar { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; flex-shrink: 0; }
+    .ig-comment-content { flex: 1; }
+    .ig-comment-name-row { display: flex; align-items: center; gap: 4px; margin-bottom: 2px; }
+    .ig-comment-name { font-size: 14px; font-weight: 600; color: #fff; }
+    .ig-comment-verified { font-size: 11px; color: #0095f6; }
+    .ig-comment-time { font-size: 14px; color: #8e8e93; margin-left: 4px;}
+    .ig-comment-text { font-size: 14px; line-height: 1.4; margin-bottom: 6px; color: #e7e9ea;}
+    .ig-comment-meta { font-size: 12px; color: #8e8e93; display: flex; gap: 16px; font-weight: 500;}
+    
+    .ig-comment-right { width: 24px; display: flex; flex-direction: column; align-items: center; gap: 4px; color: #8e8e93; font-size: 12px; margin-top: 4px; flex-shrink: 0;}
+    .ig-comment-right svg { width: 18px; height: 18px; fill: none; stroke: #8e8e93; stroke-width: 1.5; }
+
+    .ig-emoji-row {
+        display: flex; justify-content: space-between; padding: 12px 16px; font-size: 26px;
+        border-top: 1px solid #1f1f1f; background: #000;
+    }
+    .ig-input-row { display: flex; align-items: center; padding: 10px 16px; gap: 12px; background: #000; padding-bottom: calc(10px + env(safe-area-inset-bottom)); }
+    .ig-input-row .avatar { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; flex-shrink: 0; }
+    .ig-input-row .input { 
+        flex: 1; background: #000; border: 1px solid #333; border-radius: 24px; 
+        padding: 10px 16px; color: #fff; font-size: 14px; outline: none;
+    }
+    .ig-input-row .input::placeholder { color: #8e8e93; }
+    .ig-input-row .gif-icon { border: 1px solid #fff; border-radius: 4px; padding: 2px 6px; font-size: 12px; font-weight: 800; color: #fff; flex-shrink: 0;}
+    .ig-comment-send {
+        background: transparent; color: #0095f6; border: none; font-weight: 600; font-size: 14px;
+        cursor: pointer; pointer-events: none; opacity: 0.5; padding: 0 10px; flex-shrink: 0;
+    }
+    .ig-comment-send:not(:disabled) { opacity: 1; pointer-events: auto; }
+
+    /* ========== 相机（Camera） ========== */
+    .camera-page {
+        position: absolute; inset: 0; background: #000; z-index: 110; display: none; flex-direction: column;
+        padding-top: env(safe-area-inset-top); padding-bottom: env(safe-area-inset-bottom); color: #fff;
+    }
+    .cam-topbar { display: flex; justify-content: space-between; align-items: center; padding: 10px 20px; height: 50px; }
+    .cam-top-left, .cam-top-right { display: flex; gap: 20px; align-items: center; }
+    .cam-btn { width: 32px; height: 32px; border-radius: 50%; background: rgba(255,255,255,0.15); display: flex; align-items: center; justify-content: center; cursor: pointer; }
+    .cam-btn-active { background: #ffd700; color: #000; font-size: 12px; font-weight: bold; border-radius: 16px; padding: 0 10px; width: auto; }
+    .cam-back { cursor: pointer; display: flex; align-items: center; justify-content: center; margin-right: 10px; fill:#fff;}
+    
+    .cam-viewfinder {
+        flex: 1; position: relative; margin: 10px 0;
+        background-image: url('https://s1.imagehub.cc/images/2026/10/27/a18a0db68f946e7a2c631b8151b824fa.jpg');
+        background-size: cover; background-position: center;
+    }
+    /* 九宫格线条 */
+    .grid-line { position: absolute; background: rgba(255,255,255,0.25); }
+    .grid-v1 { left: 33.33%; top: 0; bottom: 0; width: 1px; }
+    .grid-v2 { left: 66.66%; top: 0; bottom: 0; width: 1px; }
+    .grid-h1 { top: 33.33%; left: 0; right: 0; height: 1px; }
+    .grid-h2 { top: 66.66%; left: 0; right: 0; height: 1px; }
+    /* 中间偏黄框 */
+    .focus-box { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 80px; height: 80px; border: 1px solid rgba(255,215,0,0.6); display: flex; align-items: center; justify-content: center; }
+    .focus-box::after { content: ""; width: 4px; height: 4px; background: rgba(255,215,0,0.8); border-radius: 50%; }
+
+    .cam-zoom-row { display: flex; justify-content: center; gap: 20px; padding: 10px 0; font-size: 13px; color: #bbb; align-items: center; }
+    .cam-zoom-item { cursor: pointer; }
+    .cam-zoom-active { color: #ffd700; font-weight: bold; font-size: 15px; }
+
+    .cam-modes { display: flex; justify-content: center; gap: 22px; padding: 10px 0; font-size: 12px; color: #888; overflow-x: auto; scrollbar-width: none; }
+    .cam-modes::-webkit-scrollbar { display: none; }
+    .cam-mode-item { white-space: nowrap; cursor: pointer; }
+    .cam-mode-active { color: #ffd700; font-weight: 600; font-size: 14px; }
+
+    .cam-bottom-bar { display: flex; justify-content: space-between; align-items: center; padding: 15px 30px 30px; }
+    .cam-album-preview { width: 50px; height: 50px; border-radius: 8px; object-fit: cover; cursor: pointer; border: 1px solid #333; }
+    .cam-shutter { width: 74px; height: 74px; border-radius: 50%; border: 4px solid #fff; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+    .cam-shutter-inner { width: 58px; height: 58px; border-radius: 50%; background: #fff; }
+    .cam-flip { width: 44px; height: 44px; border-radius: 50%; background: #222; display: flex; align-items: center; justify-content: center; cursor: pointer; fill:#fff;}
+
+    /* ========== 相册（Photos）深色模式 ========== */
+    .photos-page {
+        position: absolute; inset: 0; background: #000; z-index: 110; display: none; flex-direction: column;
+        padding-top: env(safe-area-inset-top); padding-bottom: env(safe-area-inset-bottom); color: #fff;
+    }
+    .photos-topbar { display: flex; justify-content: space-between; align-items: center; padding: 10px 16px; flex-shrink: 0; }
+    .photos-scroll-area { flex: 1; overflow-y: auto; padding-bottom: 80px; }
+    .photos-title { font-size: 32px; font-weight: 700; margin: 10px 16px 20px; color: #fff; }
+    .photos-plus { font-size: 26px; color: #0A84FF; cursor: pointer; font-weight: 300; padding: 0 10px; }
+    .photos-close { font-size: 16px; color: #0A84FF; cursor: pointer; padding: 10px; font-weight: 500; }
+    
+    .photos-section-header { display: flex; justify-content: space-between; align-items: center; padding: 0 16px; margin-bottom: 12px; }
+    .photos-section-title { font-size: 22px; font-weight: 700; color: #fff; }
+    .photos-see-all { font-size: 16px; color: #0A84FF; cursor: pointer; }
+
+    .photos-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; padding: 0 16px; margin-bottom: 24px; }
+    .photos-album-item { display: flex; flex-direction: column; gap: 6px; cursor: pointer; }
+    .photos-album-img { width: 100%; aspect-ratio: 1; border-radius: 8px; object-fit: cover; background: #222; }
+    .photos-album-name { font-size: 15px; font-weight: 500; color: #fff; }
+    .photos-album-count { font-size: 14px; color: #8e8e93; }
+
+    .photos-bottom-nav { display: flex; justify-content: space-around; align-items: center; padding: 10px 0 20px; border-top: 1px solid #222; background: rgba(0,0,0,0.9); position: absolute; bottom: 0; left: 0; right: 0; }
+    .photos-nav-item { display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: 10px; color: #8e8e93; cursor: pointer; }
+    .photos-nav-item.active { color: #0A84FF; }
+    .photos-nav-item svg { width: 24px; height: 24px; fill: #8e8e93; }
+    .photos-nav-item.active svg { fill: #0A84FF; }
+
+    /* ========== 备忘录（Reminders） ========== */
+    .reminders-page {
+        position: absolute; inset: 0; background: #fff; z-index: 110; display: none; flex-direction: column;
+        padding-top: env(safe-area-inset-top); padding-bottom: env(safe-area-inset-bottom); color: #000;
+    }
+    .rem-topbar { display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; }
+    .rem-back-btn { font-size: 17px; color: #e5b000; display: flex; align-items: center; gap: 4px; cursor: pointer; }
+    .rem-top-right { display: flex; gap: 16px; align-items: center; }
+    .rem-icon { width: 24px; height: 24px; fill: #e5b000; cursor: pointer; }
+    .rem-done-btn { font-size: 17px; color: #e5b000; font-weight: 600; cursor: pointer; margin-left: 8px; }
+    
+    .rem-content { flex: 1; padding: 10px 20px 40px; overflow-y: auto; font-size: 17px; line-height: 1.6; color: #000; position: relative; }
+    .rem-cursor { width: 2px; height: 24px; background: #e5b000; position: absolute; left: 16px; top: 12px; animation: blink 1s step-end infinite; }
+    @keyframes blink { 50% { opacity: 0; } }
+    .rem-text { margin-left: 12px; white-space: pre-wrap; text-align: justify; }
+
+    /* ========== 音乐（Music） ========== */
+    .music-page {
+        position: absolute; inset: 0; background: #1e1e1e; z-index: 110; display: none; flex-direction: column;
+        padding-top: env(safe-area-inset-top); padding-bottom: env(safe-area-inset-bottom); color: #fff; overflow: hidden;
+    }
+    .music-topbar { display: flex; justify-content: space-between; align-items: center; padding: 15px 24px; color: #aaa; font-size: 16px; }
+    .music-topbar svg { stroke: #aaa; cursor: pointer; }
+    .music-search-text { font-size: 15px; color: #ccc; font-weight: 500; }
+
+    .music-together { margin-top: 10px; display: flex; flex-direction: column; align-items: center; gap: 12px; }
+    .together-avatars { display: flex; align-items: center; justify-content: center; }
+    .together-avatars img { width: 56px; height: 56px; border-radius: 50%; border: 2px solid #1e1e1e; object-fit: cover; }
+    .together-avatars img:first-child { margin-right: -12px; z-index: 1; }
+    .together-text { font-size: 11px; color: #777; }
+
+    .music-disc-wrap { flex: 1; display: flex; justify-content: center; align-items: center; position: relative; margin: 20px 0; }
+    .music-disc {
+        width: 280px; height: 280px; border-radius: 50%; object-fit: cover;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+        animation: spin 25s linear infinite;
+        animation-play-state: paused; /* 默认暂停，点击播放后旋转 */
+    }
+    @keyframes spin { 100% { transform: rotate(360deg); } }
+
+    .music-info { padding: 0 24px; margin-bottom: 24px; }
+    .music-title { font-size: 20px; font-weight: 600; color: #fff; margin-bottom: 6px; }
+    .music-artist { font-size: 13px; color: #aaa; display: flex; align-items: center; gap: 8px; }
+    .follow-tag { font-size: 10px; border: 1px solid #555; border-radius: 10px; padding: 2px 6px; color: #aaa; }
+
+    .music-progress { padding: 0 24px; margin-bottom: 30px; }
+    .time-row { display: flex; justify-content: space-between; font-size: 11px; color: #777; margin-bottom: 8px; }
+    .progress-bar-bg { width: 100%; height: 3px; background: #444; border-radius: 2px; position: relative; cursor: pointer; }
+    .progress-bar-fill { height: 100%; background: #fff; border-radius: 2px; position: absolute; left: 0; top: 0; width: 0%;}
+    .progress-bar-dot { width: 10px; height: 10px; background: #fff; border-radius: 50%; position: absolute; top: 50%; left: 0%; transform: translate(-50%, -50%); box-shadow: 0 0 4px rgba(0,0,0,0.5); }
+
+    .music-controls { display: flex; justify-content: space-around; align-items: center; padding: 0 24px; margin-bottom: 30px; }
+    .ctrl-btn { width: 24px; height: 24px; cursor: pointer; fill: #ccc; stroke: #ccc;}
+    .play-btn { width: 38px; height: 38px; fill: #fff; cursor: pointer; }
+
+    .music-bottom { display: flex; justify-content: space-around; align-items: center; padding: 15px 24px 30px; }
+    .music-bottom svg { width: 20px; height: 20px; cursor: pointer; fill: #999; }
+
+    /* 针对小屏手机调整间距 */
+    @media (max-height: 700px) {
+        .top-info .time { font-size: 36px; }
+        .card-top { height: 110px; }
+        .avatar { width: 70px; height: 70px; }
+        .card-bottom { padding: 48px 16px 16px; }
+        .middle-grid { margin-top: 12px; }
+        .bottom-bar { margin-top: 12px; padding: 12px; }
+        .app-icon, .bar-icon { width: 48px; height: 48px; border-radius: 12px; }
+        .music-disc { width: 230px; height: 230px; }
+    }
+    @media (max-width: 360px) {
+        .left-box, .right-apps { padding: 10px; }
+        .app-icon, .bar-icon { width: 48px; height: 48px; }
+        .name { font-size: 18px; }
+    }
+</style>
+</head>
+
+<body>
+<audio id="bgAudio" src="https://cf.theqazxsw.com/autoupload/f/x7ym3/20261028/JEE7/Justin_Bieber_-_Off_My_Face.mp3" loop></audio>
+
+<!-- 通话音频，去掉了 loop 属性，只播放一次 -->
+<audio id="callAudio" src="https://cf.theqazxsw.com/autoupload/f/x7ym3/20261029/S5h5/taesan-2026-10-28-22-54-%EC%95%84%EC%9D%B4%EA%B3%A0-%EC%A7%80%EA%B8%88-%EC%A7%84%EC%A7%9C-%EC%98%88%EC%81%98%EB%8B%A4%2C-%EC%9A%B0%EB%A6%AC-%EC%98%88%EC%81%9C%EC%9D%B4.mp3"></audio>
+
+<div class="phone">
+    <div class="desktop-scroll">
+        <div class="top-info">
+            <div class="time" id="timeBox">23:13</div>
+            <div class="date" id="dateBox">Monday, Oct 26</div>
+            <div class="greeting">是贱侣是真爱是精神病人</div>
+        </div>
+
+        <div class="profile-card">
+            <div class="card-top" id="cardTop">
+                <img class="avatar" id="avatar" src="https://s1.imagehub.cc/images/2026/10/26/1bb64f1194ef5f347457e8d2e15bd42b.png" alt="头像" />
+            </div>
+            <div class="card-bottom">
+                <div class="name">o公主</div>
+                <div class="sign">高等王子@giant mountain的0号死侍</div>
+                <div class="emo-text"></div>
+                <div class="location">Seoul</div>
+            </div>
+        </div>
+
+        <div class="middle-grid">
+            <div class="left-box">
+                <img class="left-image" id="leftImage" src="https://s1.imagehub.cc/images/2026/10/27/182459318295fa79a2999dc9bba7fa17.jpg" alt="左侧图片" />
+            </div>
+            <div class="right-apps">
+                <div class="app-item" data-app="music">
+                    <img class="app-icon" src="https://s1.imagehub.cc/images/2026/10/27/88999fa517dd54058d6ec3b013b42b3b.jpg" alt="Music" />
+                    <div class="app-name">Music</div>
+                </div>
+                <div class="app-item chat-app-item" data-app="chat">
+                    <div class="chat-badge-wrap">
+                        <img class="app-icon" src="https://s1.imagehub.cc/images/2026/10/27/4d6b4ddd9bb5fad5405f98e68d1ad737.jpg" alt="Chat" />
+                        <span class="chat-red-dot" id="chatBadge">1</span>
+                    </div>
+                    <div class="app-name">Chat</div>
+                </div>
+                <div class="app-item" data-app="ins">
+                    <div class="chat-badge-wrap">
+                        <img class="app-icon" src="https://s1.imagehub.cc/images/2026/10/27/662daa311c430a15b24d6bc9ff627b6b.jpg" alt="Instagram" />
+                        <span class="chat-red-dot" id="igBadge" style="display:none;">1</span>
+                    </div>
+                    <div class="app-name">Instagram</div>
+                </div>
+                <div class="app-item" data-app="x">
+                    <img class="app-icon" src="https://s1.imagehub.cc/images/2026/10/27/d4e8721fad44b082ccac783424d914e6.jpg" alt="X" />
+                    <div class="app-name">X</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="bottom-bar">
+            <div class="bar-item" data-app="reminder">
+                <img class="bar-icon" src="https://s1.imagehub.cc/images/2026/10/27/bf329ffc54062933798d1b2fb9ce34d1.jpg" alt="Reminders" />
+                <div class="bar-name">Reminders</div>
+            </div>
+            <div class="bar-item" data-app="camera">
+                <img class="bar-icon" src="https://s1.imagehub.cc/images/2026/10/27/445b1a6167ab89aacb0b6880fdfd1af2.jpg" alt="Camera" />
+                <div class="bar-name">Camera</div>
+            </div>
+            <div class="bar-item" data-app="photo">
+                <img class="bar-icon" src="https://s1.imagehub.cc/images/2026/10/27/4d6772e9db0673d05bdd29955c8a8377.jpg" alt="Photos" />
+                <div class="bar-name">Photos</div>
+            </div>
+        </div>
+    </div><!-- desktop-scroll -->
+
+    <!-- ========== Chat 全屏页面 ========== -->
+    <div class="full-page" id="chatFullPage">
+        <div class="chat-topbar">
+            <svg class="chat-back" id="chatBack" width="24" height="24" viewBox="0 0 24 24">
+                <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
+            </svg>
+            <span class="chat-name">山王子</span>
+            <div class="chat-actions">
+                <!-- 视频通话图标仅作摆设，去掉了点击事件 -->
+                <svg width="24" height="24" viewBox="0 0 24 24">
+                    <path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z"/>
+                </svg>
+                <svg width="24" height="24" viewBox="0 0 24 24">
+                    <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+                </svg>
+            </div>
+        </div>
+        <div class="chat-content" id="chatContent">
+        </div>
+        <div class="chat-input-area">
+            <svg class="plus-btn" width="24" height="24" viewBox="0 0 24 24">
+                <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
+            </svg>
+            <div class="input-wrap">
+                <!-- 默认只读，等视频通话结束后解除 readonly -->
+                <input class="chat-input" id="chatInput" placeholder="Enter a message" readonly>
+            </div>
+            <button class="send-btn" id="sendBtn">
+                <svg width="20" height="20" viewBox="0 0 24 24">
+                    <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+                </svg>
+            </button>
+        </div>
+    </div>
+
+    <!-- ========== 顶部通知横幅（图1） ========== -->
+    <div class="call-banner" id="callBanner">
+        <div class="call-banner-left">
+            <img src="https://s1.imagehub.cc/images/2026/10/27/a629e8183e0858d5fae12b39e92fbe02.jpg" class="call-banner-avatar">
+            <div class="call-banner-kakao">TALK</div>
+        </div>
+        <div class="call-banner-main">
+            <div class="call-banner-sub">KakaoTalk 视频</div>
+            <div class="call-banner-name">山王子</div>
+        </div>
+        <div class="call-banner-actions">
+            <div class="call-btn-sm reject" id="bannerReject">
+                <svg viewBox="0 0 24 24"><path d="M12 9c-1.6 0-3.15.25-4.6.72v3.1c0 .39-.23.74-.56.9-.98.49-1.87 1.12-2.66 1.85-.18.18-.43.28-.7.28-.28 0-.53-.11-.71-.29L.29 13.08c-.18-.17-.29-.42-.29-.7 0-.28.11-.53.29-.71C3.34 8.78 7.46 7 12 7s8.66 1.78 11.71 4.67c.18.18.29.43.29.71 0 .28-.11.53-.29.7l-2.48 2.48c-.18.18-.43.29-.71.29-.27 0-.52-.1-.7-.28-.79-.73-1.68-1.36-2.66-1.85-.33-.16-.56-.5-.56-.9v-3.1C15.15 9.25 13.6 9 12 9z"/></svg>
+            </div>
+            <div class="call-btn-sm accept" id="bannerAccept">
+                <svg viewBox="0 0 24 24"><path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z"/></svg>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== 全屏视频邀请界面（图2） ========== -->
+    <div class="incoming-call-popup" id="incomingCallPopup">
+        <div class="incoming-info">
+            <div class="incoming-sub">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="#fee500" style="background:#fee500; border-radius:4px;"><path d="M12 3c-4.97 0-9 3.58-9 8 0 2.83 1.6 5.32 4 6.73V21l3.6-1.8c.45.08.92.12 1.4.12 4.97 0 9-3.58 9-8s-4.03-8-9-8z" fill="#3c1e1e"/></svg>
+                KakaoTalk 视频...
+            </div>
+            <div class="incoming-name">山王子</div>
+        </div>
+        
+        <div class="incoming-actions">
+            <div class="incoming-col">
+                <div class="incoming-btn-wrap">
+                    <div class="incoming-btn">
+                        <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>
+                    </div>
+                    <div class="incoming-btn-text">信息</div>
+                </div>
+                <!-- 拒绝按钮，移除了点击事件，点击无反应 -->
+                <div class="incoming-btn-wrap">
+                    <div class="incoming-btn reject">
+                        <svg viewBox="0 0 24 24"><path d="M12 9c-1.6 0-3.15.25-4.6.72v3.1c0 .39-.23.74-.56.9-.98.49-1.87 1.12-2.66 1.85-.18.18-.43.28-.7.28-.28 0-.53-.11-.71-.29L.29 13.08c-.18-.17-.29-.42-.29-.7 0-.28.11-.53.29-.71C3.34 8.78 7.46 7 12 7s8.66 1.78 11.71 4.67c.18.18.29.43.29.71 0 .28-.11.53-.29.7l-2.48 2.48c-.18.18-.43.29-.71.29-.27 0-.52-.1-.7-.28-.79-.73-1.68-1.36-2.66-1.85-.33-.16-.56-.5-.56-.9v-3.1C15.15 9.25 13.6 9 12 9z"/></svg>
+                    </div>
+                    <div class="incoming-btn-text">拒绝</div>
+                </div>
+            </div>
+            <div class="incoming-col">
+                <div class="incoming-btn-wrap">
+                    <div class="incoming-btn">
+                        <svg viewBox="0 0 24 24"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2zm-2 1H8v-6c0-2.48 1.51-4.5 4-4.5s4 2.02 4 4.5v6z"/></svg>
+                    </div>
+                    <div class="incoming-btn-text">提醒我</div>
+                </div>
+                <div class="incoming-btn-wrap" id="acceptCallBtn">
+                    <div class="incoming-btn accept">
+                        <svg viewBox="0 0 24 24"><path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z"/></svg>
+                    </div>
+                    <div class="incoming-btn-text">接听</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== 视频通话进行中页面（图3/图1，5个底部图标） ========== -->
+    <div class="video-call-page" id="videoCallPage">
+        <div class="call-top">
+            <div class="call-top-left">
+                <div class="call-top-name">
+                    山王子 
+                    <svg width="16" height="16" viewBox="0 0 24 24" style="fill:#fff; margin-left:4px;"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+                </div>
+                <div class="call-timer" id="callTimer">12:21</div>
+            </div>
+            <div class="call-top-icons">
+                <svg viewBox="0 0 24 24"><path d="M6 10c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm12 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm-6 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
+                <svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+                <svg viewBox="0 0 24 24"><path d="M13 1c-.83 0-1.5.67-1.5 1.5V10h-2V4.5c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5V11h-2V6.5c0-.83-.67-1.5-1.5-1.5S2.5 5.67 2.5 6.5v8c0 4.14 3.36 7.5 7.5 7.5s7.5-3.36 7.5-7.5v-4c0-.83-.67-1.5-1.5-1.5S14.5 9.67 14.5 10.5v1.5h-2V2.5c0-.83-.67-1.5-1.5-1.5z"/></svg>
+                <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm3.5-9c.83 0 1.5-.67 1.5-1.5S16.33 8 15.5 8 14 8.67 14 9.5s.67 1.5 1.5 1.5zm-7 0c.83 0 1.5-.67 1.5-1.5S9.33 8 8.5 8 7 8.67 7 9.5 7.67 11 8.5 11zm3.5 6.5c2.33 0 4.31-1.46 5.11-3.5H6.89c.8 2.04 2.78 3.5 5.11 3.5z"/></svg>
+                <svg viewBox="0 0 24 24"><path d="M19 11h-8v6h8v-6zm4 8V4.98C23 3.88 22.1 3 21 3H3c-1.1 0-2 .88-2 1.98V19c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2zm-2 .02H3V4.97h18v14.05z"/></svg>
+            </div>
+        </div>
+        
+        <div class="call-main-video">
+            <div class="call-pip">
+                <img src="https://s1.imagehub.cc/images/2026/10/28/d90a65aeef74fcf220900cd4870b0a61.jpg" alt="小窗">
+                <div class="call-pip-name">山王子</div>
+            </div>
+        </div>
+
+        <div class="call-bottom">
+            <!-- 1. 魔法棒/特效 -->
+            <div class="call-tool-btn">
+                <svg viewBox="0 0 24 24"><path d="M12 2l2.4 7.6H22l-6.2 4.5 2.4 7.6-6.2-4.5-6.2 4.5 2.4-7.6L2 9.6h7.6z"/></svg>
+            </div>
+            <!-- 2. 麦克风 -->
+            <div class="call-tool-btn">
+                <svg viewBox="0 0 24 24"><path d="M12 15c1.66 0 3-1.34 3-3V6c0-1.66-1.34-3-3-3S9 4.34 9 6v6c0 1.66 1.34 3 3 3z"/><path d="M17 12c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-2.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg>
+            </div>
+            <!-- 3. 红色挂断 -->
+            <div class="call-tool-btn hangup" id="hangupBtn">
+                <svg viewBox="0 0 24 24"><path d="M12 9c-1.6 0-3.15.25-4.6.72v3.1c0 .39-.23.74-.56.9-.98.49-1.87 1.12-2.66 1.85-.18.18-.43.28-.7.28-.28 0-.53-.11-.71-.29L.29 13.08c-.18-.17-.29-.42-.29-.7 0-.28.11-.53.29-.71C3.34 8.78 7.46 7 12 7s8.66 1.78 11.71 4.67c.18.18.29.43.29.71 0 .28-.11.53-.29.7l-2.48 2.48c-.18.18-.43.29-.71.29-.27 0-.52-.1-.7-.28-.79-.73-1.68-1.36-2.66-1.85-.33-.16-.56-.5-.56-.9v-3.1C15.15 9.25 13.6 9 12 9z"/></svg>
+            </div>
+            <!-- 4. 翻转镜头 -->
+            <div class="call-tool-btn">
+                <svg viewBox="0 0 24 24"><path d="M16 8v3l4-4-4-4v3H8a4 4 0 0 0-4 4v2h2v-2a2 2 0 0 1 2-2h8zm-8 8v-3l-4 4 4 4v-3h8a4 4 0 0 0 4-4v-2h-2v2a2 2 0 0 1-2 2H8z"/></svg>
+            </div>
+            <!-- 5. 摄像头开关 -->
+            <div class="call-tool-btn">
+                <svg viewBox="0 0 24 24"><path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z"/></svg>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== X 全屏首页 ========== -->
+    <div class="x-full-page" id="xFullPage">
+        <div class="x-topbar">
+            <div class="x-top-left">
+                <svg class="x-back-arrow" id="xBack" width="24" height="24" viewBox="0 0 24 24">
+                    <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
+                </svg>
+                <div class="x-avatar-wrap">
+                    <img class="x-avatar" src="https://s1.imagehub.cc/images/2026/10/26/1bb64f1194ef5f347457e8d2e15bd42b.png" alt="头像">
+                </div>
+            </div>
+            <svg class="x-logo" width="24" height="24" viewBox="0 0 24 24">
+                <path d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z"/>
+            </svg>
+            <svg class="x-more" id="xSettings" width="24" height="24" viewBox="0 0 24 24">
+                <path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/>
+            </svg>
+        </div>
+
+        <div class="x-tab-bar">
+            <div class="x-tab active">为你推荐</div>
+            <div class="x-tab">正在关注</div>
+        </div>
+
+        <div class="x-scroll" id="xScroll">
+            <div class="empty-tip" id="emptyTip">这里空空如也——暂时。</div>
+            <div id="tweetContainer"></div>
+        </div>
+
+        <div class="x-bottom-bar">
+            <div class="x-nav">
+                <svg width="24" height="24" viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+                <svg width="24" height="24" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+                <svg width="24" height="24" viewBox="0 0 24 24"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2zm-2 1H8v-6c0-2.48 1.51-4.5 4-4.5s4 2.02 4 4.5v6z"/></svg>
+                <svg width="24" height="24" viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+            </div>
+            <button class="x-compose-btn" id="xCompose">
+                <svg width="20" height="20" viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
+            </button>
+        </div>
+
+        <!-- 推文详情&评论子页面 -->
+        <div class="x-detail-page" id="xDetailPage">
+            <div class="x-detail-top">
+                <div class="x-detail-top-left">
+                    <svg class="x-detail-back" id="detailBack" width="24" height="24" viewBox="0 0 24 24">
+                        <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
+                    </svg>
+                    <span class="x-detail-title">发帖</span>
+                </div>
+                <svg class="x-detail-more" width="24" height="24" viewBox="0 0 24 24">
+                    <path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/>
+                </svg>
+            </div>
+            <div class="x-detail-scroll" id="detailScroll">
+                <div id="detailPostContainer"></div>
+                <div class="comments-title">最相关的回复</div>
+                <div id="commentContainer"></div>
+            </div>
+
+            <!-- 回复输入栏 -->
+            <div class="reply-input-wrap" id="replyWrap">
+                <img class="reply-input-avatar" src="https://s1.imagehub.cc/images/2026/10/26/1bb64f1194ef5f347457e8d2e15bd42b.png" alt="我的头像">
+                <input class="reply-input" id="replyInput" placeholder="发布你的回复">
+                <button class="reply-send" id="replySend" disabled>回复</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== X 发文页面 ========== -->
+    <div class="x-compose-page" id="xComposePage">
+        <div class="x-compose-topbar">
+            <span class="x-compose-cancel" id="composeCancel">取消</span>
+            <button class="x-compose-post" id="composePostBtn">发布</button>
+        </div>
+        <div class="x-compose-body">
+            <img class="x-compose-avatar" src="https://s1.imagehub.cc/images/2026/10/26/1bb64f1194ef5f347457e8d2e15bd42b.png">
+            <div class="x-compose-input-wrap">
+                <textarea class="x-compose-input" id="composeInput" placeholder="有什么新鲜事？"></textarea>
+            </div>
+        </div>
+        
+        <div class="x-compose-toolbar">
+            <div class="x-compose-reply-perm">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1d9bf0" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+                所有人可以回复
+            </div>
+            <div class="x-compose-actions">
+                <svg viewBox="0 0 24 24"><path d="M9 14L4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/></svg>
+                <svg viewBox="0 0 24 24"><path d="M15 14l5-5-5-5"/><path d="M20 9H9.5a5.5 5.5 0 0 0 0 11H13"/></svg>
+            </div>
+        </div>
+        
+        <div class="x-compose-media-bar">
+            <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+            <svg viewBox="0 0 24 24"><rect x="2" y="6" width="20" height="14" rx="2" ry="2"/><circle cx="12" cy="13" r="4"/></svg>
+            <svg viewBox="0 0 24 24"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+            <svg viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2" ry="2"/><text x="12" y="15" text-anchor="middle" font-size="8" fill="#1d9bf0">LIVE</text></svg>
+            <svg viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2" ry="2"/><text x="12" y="15" text-anchor="middle" font-size="8" fill="#1d9bf0">GIF</text></svg>
+            <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        </div>
+    </div>
+
+    <!-- X消息弹窗 -->
+    <div class="x-notification-popup" id="notifyPopup">
+        <img class="popup-avatar" src="https://s1.imagehub.cc/images/2026/10/27/182459318295fa79a2999dc9bba7fa17.jpg">
+        <div class="popup-main">
+            <div class="popup-title">帅气风暴</div>
+            <div class="popup-text">你关注的 @giant mountain 更新了一条推文</div>
+        </div>
+        <div class="popup-close" id="popupClose">✕</div>
+    </div>
+
+    <!-- KakaoTalk 风格 chat 消息弹窗 -->
+    <div class="chat-notify-popup" id="chatNotifyPopup">
+        <div class="chat-notify-avatar-wrap">
+            <img class="chat-notify-avatar" src="https://s1.imagehub.cc/images/2026/10/27/a629e8183e0858d5fae12b39e92fbe02.jpg">
+            <div class="chat-notify-badge">TALK</div>
+        </div>
+        <div class="chat-notify-main">
+            <div class="chat-notify-name">山王子</div>
+            <div class="chat-notify-text">我好饿</div>
+        </div>
+        <div class="chat-notify-time">刚刚</div>
+    </div>
+
+    <!-- Instagram 风格结束通知 -->
+    <div class="ig-notify-popup" id="igNotifyPopup">
+        <div class="ig-icon">
+            <svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 1.366.062 2.633.334 3.608 1.308.974.974 1.246 2.242 1.308 3.608.058 1.266.07 1.646.07 4.85s-.012 3.584-.07 4.85c-.062 1.366-.334 2.633-1.308 3.608-.974.974-2.242 1.246-3.608 1.308-1.266.058-1.646.07-4.85.07s-3.584-.012-4.85-.07c-1.366-.062-2.633-.334-3.608-1.308-.974-.974-1.246-2.242-1.308-3.608C2.175 15.747 2.163 15.367 2.163 12s.012-3.584.07-4.85c.062-1.366.334-2.633 1.308-3.608C4.515 2.568 5.782 2.296 7.148 2.233 8.414 2.175 8.796 2.163 12 2.163zm0-2.163c-3.259 0-3.667.014-4.947.072-1.28.059-2.423.248-3.387 1.212C2.703 2.247 2.515 3.39 2.456 4.67.398 5.949 2.386 6.357 2.386 12s.014 6.051.072 7.33c.059 1.28.248 2.423 1.212 3.387.964.964 2.107 1.153 3.387 1.212 1.28.058 1.688.072 4.947.072s3.667-.014 4.947-.072c1.28-.059 2.423-.248 3.387-1.212.964-.964 1.153-2.107 1.212-3.387.058-1.28.072-1.688.072-4.947s-.014-3.667-.072-4.947c-.059-1.28-.248-2.423-1.212-3.387-.964-.964-2.107-1.153-3.387-1.212C15.667.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zm0 10.162a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881z"/></svg>
+        </div>
+        <div class="ig-notify-main">
+            <div class="ig-notify-top">即时通知</div>
+            <div class="ig-notify-name">mountain</div>
+            <div class="ig-notify-text">分享了1张照片。</div>
+        </div>
+        <div class="ig-notify-time">刚刚</div>
+    </div>
+
+    <!-- ========== Instagram Feed 首页 ========== -->
+    <div class="ig-full-page" id="igFullPage">
+        <div class="ig-feed-topbar">
+            <svg class="ig-back-btn" id="igFeedBack" width="26" height="26" viewBox="0 0 24 24" fill="#fff"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+            <div class="ig-feed-logo">Instagram</div>
+            <div class="ig-feed-actions">
+                <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+            </div>
+        </div>
+
+        <div class="ig-story-row">
+            <div class="ig-story">
+                <div class="ig-story-ring ring-gray">
+                    <img src="https://s1.imagehub.cc/images/2026/10/26/1bb64f1194ef5f347457e8d2e15bd42b.png" alt="user">
+                    <div style="position:absolute; bottom:0; right:0; width:22px; height:22px; background:#3897f0; border-radius:50%; border:2px solid #000; display:flex; align-items:center; justify-content:center; color:#fff; font-weight:bold; font-size:16px; line-height:1;">+</div>
+                </div>
+                <div class="ig-story-name">你的快拍</div>
+            </div>
+            <div class="ig-story">
+                <div class="ig-story-ring">
+                    <img src="https://s1.imagehub.cc/images/2026/10/27/182459318295fa79a2999dc9bba7fa17.jpg" alt="char">
+                </div>
+                <div class="ig-story-name">mountain</div>
+            </div>
+        </div>
+
+        <div class="ig-feed-scroll">
+            <div class="ig-feed-post">
+                <div class="ig-feed-post-head">
+                    <img src="https://s1.imagehub.cc/images/2026/10/27/182459318295fa79a2999dc9bba7fa17.jpg" alt="char">
+                    <span class="ig-feed-username">mountain</span>
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="#fff"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
+                </div>
+                <div class="ig-feed-post-img">
+                    <img src="https://s1.imagehub.cc/images/2026/10/28/1ed1999260e495eedb12b997bbf1c57f.jpg" alt="帖子">
+                </div>
+                <div class="ig-post-actions">
+                    <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                    <svg viewBox="0 0 24 24" id="igFeedCommentIcon"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>
+                    <svg viewBox="0 0 24 24"><path d="M21.5 11.5L12 21 2.5 11.5 5.5 8.5l6.5 6.5 6.5-6.5 3 3z"/></svg>
+                    <svg class="save-icon" viewBox="0 0 24 24"><path d="M17 3H7c-1.1 0-2 .9-2 2v16l7-3 7 3V5c0-1.1-.9-2-2-2z"/></svg>
+                </div>
+                <div class="ig-post-likes">4万 次点赞</div>
+                <div class="ig-post-caption">粘人模式</div>
+                <div class="ig-post-date">10月18日 · 查看翻译</div>
+            </div>
+        </div>
+
+        <div class="ig-bottom-nav">
+            <svg class="house-btn ig-house-locked" viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+            <svg viewBox="0 0 24 24"><path d="M4 6h16v12H4V6zm-2 0v12a2 2 0 002 2h16a2 2 0 002-2V6a2 2 0 00-2-2H4a2 2 0 00-2 2zm9 2l5 4-5 4V8z"/></svg>
+            <svg viewBox="0 0 24 24"><path d="M20 4L4 14l7 2 2 7 7-19z"/></svg>
+            <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5z"/></svg>
+            <img class="ig-nav-avatar profile-btn" src="https://s1.imagehub.cc/images/2026/10/26/1bb64f1194ef5f347457e8d2e15bd42b.png" alt="me">
+        </div>
+    </div>
+
+    <!-- ========== IG 个人主页 ========== -->
+    <div class="ig-full-page" id="igProfilePage" style="display:none;">
+        <div class="ig-topbar">
+            <svg class="ig-back-btn" id="igProfileBack" width="26" height="26" viewBox="0 0 24 24" fill="#fff"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+            <div class="ig-username">oinyourheart <svg width="16" height="16" viewBox="0 0 24 24" fill="#fff"><path d="M7 10l5 5 5-5z"/></svg></div>
+            <div class="ig-top-actions">
+                <svg width="26" height="26" viewBox="0 0 24 24" fill="#fff"><path d="M12 22a10 10 0 110-20 10 10 0 010 20zm0-18a8 8 0 100 16 8 8 0 000-16zm-3.5 8.5a1.5 1.5 0 100-3 1.5 1.5 0 000 3zm7 0a1.5 1.5 0 100-3 1.5 1.5 0 000 3z"/></svg>
+                <svg width="26" height="26" viewBox="0 0 24 24" fill="#fff"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>
+            </div>
+        </div>
+
+        <div class="ig-profile-row">
+            <div class="ig-avatar-ring">
+                <img src="https://s1.imagehub.cc/images/2026/10/26/1bb64f1194ef5f347457e8d2e15bd42b.png" alt="头像">
+            </div>
+            <div class="ig-stats">
+                <div class="ig-stat"><div class="ig-stat-num">27</div><div class="ig-stat-label">帖子</div></div>
+                <div class="ig-stat"><div class="ig-stat-num">17.6w</div><div class="ig-stat-label">粉丝</div></div>
+                <div class="ig-stat"><div class="ig-stat-num">58</div><div class="ig-stat-label">关注中</div></div>
+            </div>
+        </div>
+
+        <div class="ig-bio">
+            <div class="ig-name">sharemylifeandsan</div>
+        </div>
+
+        <div class="ig-dashboard">
+            <div class="ig-dashboard-title">你的主页 dashboard</div>
+            <div class="ig-dashboard-sub">↗ 过去30天 186万 次浏览</div>
+        </div>
+
+        <div class="ig-action-row">
+            <button class="ig-action-btn">编辑主页</button>
+            <button class="ig-action-btn">分享主页</button>
+            <button class="ig-action-btn small">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="#fff"><path d="M15 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4zm-6-2V9H7v3H4v2h3v3h2v-3h3v-2H9z"/></svg>
+            </button>
+        </div>
+
+        <div class="ig-tab-bar">
+            <div class="ig-tab active">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="#fff"><path d="M4 4h7v7H4V4zm9 0h7v7h-7V4zM4 13h7v7H4v-7zm9 0h7v7h-7v-7z"/></svg>
+            </div>
+            <div class="ig-tab">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="#fff"><path d="M4 6h16v12H4V6zm-2 0v12a2 2 0 002 2h16a2 2 0 002-2V6a2 2 0 00-2-2H4a2 2 0 00-2 2zm9 2l5 4-5 4V8z"/></svg>
+            </div>
+            <div class="ig-tab">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="#fff"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+            </div>
+        </div>
+
+        <div class="ig-grid" id="igGrid">
+            <div class="ig-grid-item ig-post-clickable" data-idx="0">
+                <img src="https://s1.imagehub.cc/images/2026/10/28/da09a8876f9d9ec15459dda742da41b2.jpg" alt="帖子1">
+                <svg class="ig-pin-icon" viewBox="0 0 24 24"><path d="M16 9V4h1c.55 0 1-.45 1-1s-.45-1-1-1H7c-.55 0-1 .45-1 1s.45 1 1 1h1v5c0 1.66-1.34 3-3 3v2h5.97v7l1 1 1-1v-7H19v-2c-1.66 0-3-1.34-3-3z"/></svg>
+                <svg class="ig-grid-multi" viewBox="0 0 24 24"><path d="M21 3h-8a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V5a2 2 0 00-2-2zm0 12h-8V5h8v10zM3 7a2 2 0 012-2h2v2H5v10h10v-2h2v2a2 2 0 01-2 2H5a2 2 0 01-2-2V7z"/></svg>
+            </div>
+            <div class="ig-grid-item ig-post-clickable" data-idx="1">
+                <img src="https://s1.imagehub.cc/images/2026/10/28/87b2dc536258342333eeb7a29efde9e7.jpg" alt="帖子2">
+            </div>
+            <div class="ig-grid-item"><img src="https://s1.imagehub.cc/images/2026/10/28/4a95c570a4a841310c046778d084ca6e.jpg" alt="帖子3"></div>
+            <div class="ig-grid-item"><img src="https://s1.imagehub.cc/images/2026/10/28/2474dbad325398c5c6bdbdcee5e5222f.jpg" alt="帖子4"></div>
+            <div class="ig-grid-item"><img src="https://s1.imagehub.cc/images/2026/10/28/838efbc37ec3937d3daf88e0ddb6abfe.jpg" alt="帖子5"></div>
+            <div class="ig-grid-item"><img src="https://s1.imagehub.cc/images/2026/10/28/aaccbd6cf1fc0b7abec4c511f2f3dc2e.jpg" alt="帖子6"></div>
+            <div class="ig-grid-item"><img src="https://s1.imagehub.cc/images/2026/10/28/5615b2156c61b7a0130d036b15b69b10.jpg" alt="帖子7"></div>
+            <div class="ig-grid-item"><img src="https://s1.imagehub.cc/images/2026/10/28/dfd567cb6840c56592e297a55622ad5c.jpg" alt="帖子8"></div>
+            <div class="ig-grid-item"><img src="https://s1.imagehub.cc/images/2026/10/28/9a9a9a5a565aa5f87b221efae0ad795f.jpg" alt="帖子9"></div>
+        </div>
+
+        <div class="ig-bottom-nav">
+            <svg class="house-btn ig-house-locked" viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+            <svg viewBox="0 0 24 24"><path d="M4 6h16v12H4V6zm-2 0v12a2 2 0 002 2h16a2 2 0 002-2V6a2 2 0 00-2-2H4a2 2 0 00-2 2zm9 2l5 4-5 4V8z"/></svg>
+            <svg viewBox="0 0 24 24"><path d="M20 4L4 14l7 2 2 7 7-19z"/></svg>
+            <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5z"/></svg>
+            <img class="ig-nav-avatar profile-btn" src="https://s1.imagehub.cc/images/2026/10/26/1bb64f1194ef5f347457e8d2e15bd42b.png" alt="me">
+        </div>
+    </div>
+
+    <!-- ========== IG 单条帖子详情页 ========== -->
+    <div class="ig-post-page" id="igPostPage">
+        <div class="ig-post-top">
+            <svg id="igPostBack" width="26" height="26" viewBox="0 0 24 24" fill="#fff"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+            <span style="font-size:17px;font-weight:600;position:absolute;left:50%;transform:translateX(-50%);">帖子</span>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="#fff" style="opacity:0;"></svg>
+        </div>
+        
+        <div class="ig-post-scroll">
+            <div class="ig-post-top" style="padding-top:4px;">
+                <div class="ig-post-top-left">
+                    <img class="ig-post-avatar" src="https://s1.imagehub.cc/images/2026/10/26/1bb64f1194ef5f347457e8d2e15bd42b.png" alt="头像">
+                    <span class="ig-post-username">oinyourheart</span>
+                </div>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="#fff"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
+            </div>
+
+            <div class="ig-post-image">
+                <img id="igPostImg" src="https://s1.imagehub.cc/images/2026/10/28/da09a8876f9d9ec15459dda742da41b2.jpg" alt="帖子大图">
+            </div>
+
+            <div class="ig-dots">
+                <span class="ig-dot active"></span>
+                <span class="ig-dot"></span>
+                <span class="ig-dot"></span>
+                <span class="ig-dot"></span>
+                <span class="ig-dot"></span>
+            </div>
+
+            <div class="ig-post-actions">
+                <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>
+                <svg viewBox="0 0 24 24"><path d="M21.5 11.5L12 21 2.5 11.5 5.5 8.5l6.5 6.5 6.5-6.5 3 3z"/></svg>
+                <svg class="save-icon" viewBox="0 0 24 24"><path d="M17 3H7c-1.1 0-2 .9-2 2v16l7-3 7 3V5c0-1.1-.9-2-2-2z"/></svg>
+            </div>
+
+            <div class="ig-post-likes">4万 次点赞</div>
+            <div class="ig-post-caption" id="igPostCaption">Then i say yes</div>
+            <div class="ig-post-date">10月18日 · 查看翻译</div>
+        </div>
+    </div>
+
+    <!-- ========== IG 评论页（深色模式） ========== -->
+    <div class="ig-comments-page" id="igCommentsPage">
+        <div class="ig-comments-top">
+            <svg class="ig-comments-back" id="igCommentsBack" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+            <span class="ig-comments-title">评论</span>
+        </div>
+        
+        <div class="ig-comments-scroll" id="igCommentsScroll">
+            <div id="igCommentList"></div>
+        </div>
+
+        <div class="ig-emoji-row">
+            <span>❤️</span><span>🙌</span><span>🔥</span><span>👏</span><span>😢</span><span>😍</span><span>😮</span><span>😂</span>
+        </div>
+
+        <div class="ig-input-row">
+            <img class="avatar" src="https://s1.imagehub.cc/images/2026/10/26/1bb64f1194ef5f347457e8d2e15bd42b.png">
+            <input type="text" class="input" id="igCommentInput" placeholder="你觉得怎么样？">
+            <div class="gif-icon">GIF</div>
+            <button class="ig-comment-send" id="igCommentSend" disabled>发布</button>
+        </div>
+    </div>
+
+    <!-- ========== 相机（Camera）全屏界面 ========== -->
+    <div class="camera-page" id="cameraPage">
+        <div class="cam-topbar">
+            <div class="cam-top-left">
+                <div class="cam-back" id="camBackBtn">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M15 18l-6-6 6-6"/>
+                    </svg>
+                </div>
+                <div class="cam-btn cam-btn-active">3秒</div>
+            </div>
+            <div style="width: 32px; height: 32px; border-radius: 50%; background: rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="#fff"><path d="M12 8l-6 6h12z"/></svg>
+            </div>
+            <div class="cam-top-right">
+                <div class="cam-btn" style="background: transparent;">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><circle cx="12" cy="12" r="9" stroke-dasharray="4 4"/></svg>
+                </div>
+                <div class="cam-btn" style="background: transparent; border: 1px solid #555; border-radius: 6px;">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2px; width: 14px; height: 14px;">
+                        <div style="background: #fff; border-radius: 1px;"></div>
+                        <div style="background: #fff; border-radius: 1px;"></div>
+                        <div style="background: #fff; border-radius: 1px;"></div>
+                        <div style="background: #fff; border-radius: 1px;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="cam-viewfinder">
+            <div class="grid-line grid-v1"></div>
+            <div class="grid-line grid-v2"></div>
+            <div class="grid-line grid-h1"></div>
+            <div class="grid-line grid-h2"></div>
+            <div class="focus-box"></div>
+        </div>
+
+        <div class="cam-zoom-row">
+            <span class="cam-zoom-item">.5</span>
+            <span class="cam-zoom-item cam-zoom-active">1x</span>
+            <span class="cam-zoom-item">2</span>
+            <span class="cam-zoom-item">5</span>
+        </div>
+
+        <div class="cam-modes">
+            <span class="cam-mode-item">慢动作</span>
+            <span class="cam-mode-item">电影效果</span>
+            <span class="cam-mode-item">视频</span>
+            <span class="cam-mode-item cam-mode-active">照片</span>
+            <span class="cam-mode-item">人像</span>
+            <span class="cam-mode-item">空间</span>
+            <span class="cam-mode-item">全景</span>
+        </div>
+
+        <div class="cam-bottom-bar">
+            <img class="cam-album-preview" src="https://s1.imagehub.cc/images/2026/10/27/a18a0db68f946e7a2c631b8151b824fa.jpg" alt="相册预览">
+            <div class="cam-shutter">
+                <div class="cam-shutter-inner"></div>
+            </div>
+            <div class="cam-flip">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="#fff"><path d="M16 8v3l4-4-4-4v3H8a4 4 0 0 0-4 4v2h2v-2a2 2 0 0 1 2-2h8zm-8 8v-3l-4 4 4 4v-3h8a4 4 0 0 0 4-4v-2h-2v2a2 2 0 0 1-2 2H8z"/></svg>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== 相册（Photos）全屏界面（深色模式） ========== -->
+    <div class="photos-page" id="photosPage">
+        <div class="photos-topbar">
+            <div class="photos-plus" id="photosClose">+</div>
+            <div class="photos-close" id="photosDone" style="display:none;">完成</div>
+        </div>
+        
+        <div class="photos-scroll-area">
+            <div class="photos-title">Albums</div>
+
+            <div class="photos-section-header">
+                <div class="photos-section-title">My Albums</div>
+                <div class="photos-see-all">See All</div>
+            </div>
+
+            <div class="photos-grid">
+                <div class="photos-album-item">
+                    <img class="photos-album-img" src="https://s1.imagehub.cc/images/2026/10/27/50c53620c2189ebc5700a1daf1ed4193.jpg" alt="Recents">
+                    <div class="photos-album-name">Recents</div>
+                    <div class="photos-album-count">26,992</div>
+                </div>
+                <div class="photos-album-item">
+                    <img class="photos-album-img" src="https://s1.imagehub.cc/images/2026/10/27/e6c6917339cad213999a1cb9003a983d.jpg" alt="CapCut">
+                    <div class="photos-album-name">CapCut</div>
+                    <div class="photos-album-count">31</div>
+                </div>
+                <div class="photos-album-item">
+                    <img class="photos-album-img" src="https://s1.imagehub.cc/images/2026/10/27/fb382780dba8507809a927a24be468db.jpg" alt="Favorites">
+                    <div class="photos-album-name">Favorites</div>
+                    <div class="photos-album-count">237</div>
+                </div>
+                <div class="photos-album-item">
+                    <img class="photos-album-img" src="https://s1.imagehub.cc/images/2026/10/27/9bd5ce3bc0d675de957d55b36c2ac38b.jpg" alt="Reels">
+                    <div class="photos-album-name">Reels</div>
+                    <div class="photos-album-count">3</div>
+                </div>
+            </div>
+
+            <div class="photos-section-header" style="margin-top: 10px;">
+                <div class="photos-section-title">Shared Albums</div>
+                <div class="photos-see-all">See All</div>
+            </div>
+            <!-- 补全相册的图片 -->
+            <div class="photos-grid" style="grid-template-columns: 1fr 1fr; gap: 16px;">
+                <img class="photos-album-img" src="https://s1.imagehub.cc/images/2026/10/28/3b750d59fd2ee52e3997927725c2f7f5.jpg" alt="Shared">
+                <img class="photos-album-img" src="https://s1.imagehub.cc/images/2026/10/28/a39ed4c02e6dc2235d587fffb79a4d80.jpg" alt="Shared">
+            </div>
+        </div><!-- photos-scroll-area -->
+
+        <div class="photos-bottom-nav">
+            <div class="photos-nav-item">
+                <svg viewBox="0 0 24 24"><path d="M4 6h16v12H4V6zm-2 0v12a2 2 0 002 2h16a2 2 0 002-2V6a2 2 0 00-2-2H4a2 2 0 00-2 2zm9 2l5 4-5 4V8z"/></svg>
+                <span>Library</span>
+            </div>
+            <div class="photos-nav-item">
+                <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                <span>For You</span>
+            </div>
+            <div class="photos-nav-item active">
+                <svg viewBox="0 0 24 24"><path d="M10 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z"/></svg>
+                <span>Albums</span>
+            </div>
+            <div class="photos-nav-item">
+                <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5z"/></svg>
+                <span>Search</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== 备忘录（Reminders）全屏界面 ========== -->
+    <div class="reminders-page" id="remindersPage">
+        <div class="rem-topbar">
+            <div class="rem-back-btn" id="remBackBtn">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#e5b000" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="margin-right:2px;">
+                    <path d="M15 18l-6-6 6-6"/>
+                </svg>
+                所有 iCloud
+            </div>
+            <div class="rem-top-right">
+                <svg class="rem-icon" viewBox="0 0 24 24"><path d="M16 5l-1.42 1.42-1.59-1.59V16h-1.98V4.83L9.42 6.42 8 5l4-4 4 4zm4 5v11c0 1.1-.9 2-2 2H6c-1.11 0-2-.9-2-2V10c0-1.11.89-2 2-2h3v2H6v11h12V10h-3V8h3c1.1 0 2 .89 2 2z"/></svg>
+                <svg class="rem-icon" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/></svg>
+                <div class="rem-done-btn" id="remDoneBtn">完成</div>
+            </div>
+        </div>
+        <div class="rem-content">
+            <div class="rem-cursor"></div>
+            <div class="rem-text">前几天我和韩东旼作为伴娘伴郎去参加了朋友的婚礼 说起来也蛮巧的
+婚礼当天是我俩的纪念日 全新的纪念日体验
+前一天中午我们落地朋友的城市 我来的前几天就有点小感冒 状态一直不太好 强撑着吃完饭就回酒店休息了 那边还有些事 本来他还要留在酒店陪我 好说歹说才把他送走 药劲上来直犯困就睡了过去 一直睡到了天黑 迷迷糊糊听到敲门声 开门还没等看到人就被抱了个满怀 我问他怎么回来了 那边忙完了吗 他说还没有 但他好想我 想偷偷回来看看我睡得好不好 结果还忘记了带房卡 笨蛋 拥抱时感受到他身上还带着一些凉气 手上的袋子被压住发出响声 我被他牵到沙发上坐下 他神神秘秘的放下袋子 让我猜他买了什么 我哪里能猜出来 于是诚实的回答不知道
+他让我自己打开看 我打开看到了一盒荔枝 是我在飞机上随口一说想吃的荔枝 这个季节的荔枝很难买 不知道他跑了多少个商店 他边给我剥荔枝边说下午都做了什么 感冒让味觉迟钝 只尝到很模糊的甜 直到朋友的电话打来才想起还有彩排这回事 婚礼的仪式算不上很繁琐 但细碎的细节很多 两位主人公的脸上是藏不住的幸福 还有紧张 晚上吃饭的时候遇到新郎官的母亲 阿姨打趣问我们打算什么时候结婚 韩东旼回答说不急 他可不想那么早被管着 结果被旁边的新郎官拆台 说他巴不得被管着 第二天起得特别早 闹钟响了我赖着不起 韩东旼把牙刷送到我嘴边 我不得不认命 婚礼进行得很顺利 累 是真的累 但毫无疑问是幸福的 我被脚上的高跟鞋折磨得厉害 仪式结束后终于得空坐下休息一会 但手捧花的使命还没有完成 韩东旼说着我俩总得去一个就上台了 幸运女神眷顾我们 他带着捧花凯旋而归 得亏于忙碌的婚礼 不知道是真忘了还是假装忘记 两个人一整天都没有提起纪念日这回事 直到 Afterparty 韩东旼装模作样走到我面前 弯腰伸出手 掌心向上摊开邀请我和他一起跳支舞 随着音乐晃动时他突然没由头地问了一句喜欢吗 我的注意力全都放在脚下 还以为说的是眼前穿着西装的他 不假思索地回答了喜欢 听到他笑才发现说的是婚礼 我点头 婚礼是一个很容易产生“幸福着你的幸福”的地方 被别人的幸福所感动 于是也留下幸福的泪水 他说那我们以后也办一个这样的怎么样 我的脚终究还是踩到了他 谁说我会答应他了 不要脸的家伙 一曲结束 远处开始放起烟花 震耳欲聋的烟花声 我听不清他说了什么 我看向他 我迷惑的表情让他笑了起来 他又慢慢地吐出那几个字 我依旧没听清 但通过他的嘴型我知道了
+他说的是 我 爱 你
+以上就是这几天的记录 纪念日礼物是一只手镯 他藏得很不好 婚礼结束回到酒店在枕头底下摸到了 至于我送了他什么 卖个关子 反正要不了多久他就会发了 附赠几张婚礼照片 很完美的婚礼 很稀奇韩东旼很少能见到这么正经的韩东旼吧 看吧 好帅气呢
+新婚快乐 纪念日快乐 拜托要一直幸福</div>
+        </div>
+    </div>
+
+    <!-- ========== 音乐（Music）全屏界面 ========== -->
+    <div class="music-page" id="musicPage">
+        <div class="music-topbar">
+            <svg id="musicBackBtn" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+            <span class="music-search-text">搜索</span>
+            <svg class="music-refresh" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M23 4v6h-6M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+        </div>
+        
+        <div class="music-together">
+            <div class="together-avatars">
+                <img src="https://s1.imagehub.cc/images/2026/10/27/182459318295fa79a2999dc9bba7fa17.jpg">
+                <img src="https://s1.imagehub.cc/images/2026/10/26/1bb64f1194ef5f347457e8d2e15bd42b.png">
+            </div>
+            <div class="together-text">等待获取对方位置，一起听了 5000小时20分钟</div>
+        </div>
+
+        <div class="music-disc-wrap">
+            <img class="music-disc" id="musicDisc" src="https://s1.imagehub.cc/images/2026/10/27/9406e1e08e21e00dd8445c303ffdbddd.webp">
+        </div>
+
+        <div class="music-info">
+            <div class="music-title">Justin Bieber - Off My Face</div>
+            <div class="music-artist">Justin Bieber <span class="follow-tag">关注</span></div>
+        </div>
+
+        <div class="music-progress">
+            <div class="time-row">
+                <span id="currentTime">00:00</span>
+                <span>极高</span>
+                <span id="totalTime">03:01</span>
+            </div>
+            <div class="progress-bar-bg" id="progressBg">
+                <div class="progress-bar-fill" id="progressFill"></div>
+                <div class="progress-bar-dot" id="progressDot"></div>
+            </div>
+        </div>
+
+        <div class="music-controls">
+            <svg class="ctrl-btn" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M16 3h5v5M4 20L21 3M21 16v5h-5M15 15l6 6M4 4l5 5"/></svg>
+            <svg class="ctrl-btn" viewBox="0 0 24 24" fill="#fff"><path d="M6 18V6h2v12H6zm3.5-6l8.5 6V6l-8.5 6z"/></svg>
+            
+            <!-- 播放/暂停按钮 -->
+            <svg class="ctrl-btn play-btn" id="playBtn" viewBox="0 0 24 24" fill="#fff">
+                <path id="playIcon" d="M8 5v14l11-7z"/>
+                <path id="pauseIcon" style="display:none;" d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
+            </svg>
+
+            <svg class="ctrl-btn" viewBox="0 0 24 24" fill="#fff"><path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/></svg>
+            <svg class="ctrl-btn" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M3 15h18M3 9h18M3 3h18M3 21h18"/></svg>
+        </div>
+        
+        <div class="music-bottom">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+            <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>
+        </div>
+    </div>
+
+    <!-- 其他App弹窗遮罩 -->
+    <div class="mask" id="mask">
+        <div class="app-window">
+            <div class="win-header">
+                <span id="win-title">App</span>
+                <span class="close-btn" id="close">✕</span>
+            </div>
+            <div class="win-body" id="win-content">
+            </div>
+        </div>
+    </div>
+
+</div><!-- /.phone -->
+
+<script>
+    const timeBox = document.getElementById("timeBox");
+    const dateBox = document.getElementById("dateBox");
+    const weekArr = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+    const monthArr = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    function updateTime() {
+        const now = new Date();
+        let h = now.getHours().toString().padStart(2, "0");
+        let m = now.getMinutes().toString().padStart(2, "0");
+        timeBox.textContent = `${h}:${m}`;
+        const week = weekArr[now.getDay()];
+        const month = monthArr[now.getMonth()];
+        const day = now.getDate();
+        dateBox.textContent = `${week}, ${month} ${day}`;
+    }
+    updateTime();
+    setInterval(updateTime, 1000);
+
+    // --- 音乐播放逻辑 ---
+    const audio = document.getElementById("bgAudio");
+    const playBtn = document.getElementById("playBtn");
+    const playIcon = document.getElementById("playIcon");
+    const pauseIcon = document.getElementById("pauseIcon");
+    const musicDisc = document.getElementById("musicDisc");
+    const progressBg = document.getElementById("progressBg");
+    const progressFill = document.getElementById("progressFill");
+    const progressDot = document.getElementById("progressDot");
+    const currentTimeEl = document.getElementById("currentTime");
+    const totalTimeEl = document.getElementById("totalTime");
+
+    let isPlaying = false;
+
+    playBtn.onclick = () => {
+        if (isPlaying) {
+            audio.pause();
+        } else {
+            audio.play().catch(e => alert("播放失败，请检查音频链接或网络环境"));
+        }
+    };
+
+    audio.onplay = () => {
+        isPlaying = true;
+        playIcon.style.display = 'none';
+        pauseIcon.style.display = 'block';
+        musicDisc.style.animationPlayState = 'running';
+    };
+
+    audio.onpause = () => {
+        isPlaying = false;
+        playIcon.style.display = 'block';
+        pauseIcon.style.display = 'none';
+        musicDisc.style.animationPlayState = 'paused';
+    };
+
+    audio.ontimeupdate = () => {
+        const { currentTime, duration } = audio;
+        if (duration) {
+            const percent = (currentTime / duration) * 100;
+            progressFill.style.width = `${percent}%`;
+            progressDot.style.left = `${percent}%`;
+            
+            const formatTime = (time) => {
+                const m = Math.floor(time / 60).toString().padStart(2, '0');
+                const s = Math.floor(time % 60).toString().padStart(2, '0');
+                return `${m}:${s}`;
+            };
+            currentTimeEl.textContent = formatTime(currentTime);
+        }
+    };
+
+    audio.onloadedmetadata = () => {
+        const formatTime = (time) => {
+            const m = Math.floor(time / 60).toString().padStart(2, '0');
+            const s = Math.floor(time % 60).toString().padStart(2, '0');
+            return `${m}:${s}`;
+        };
+        totalTimeEl.textContent = formatTime(audio.duration);
+    };
+    
+    progressBg.onclick = (e) => {
+        const rect = progressBg.getBoundingClientRect();
+        let percent = (e.clientX - rect.left) / rect.width;
+        percent = Math.max(0, Math.min(1, percent));
+        if (audio.duration) {
+            audio.currentTime = percent * audio.duration;
+        }
+    };
+    // --- 音乐播放逻辑结束 ---
+
+    // --- App 数据与逻辑 ---
+    const appData = {
+        ins:{ title:"Instagram", html:`<h3>主页 · o公主</h3><p style="margin-top:12px; color:#aaa;">📍Seoul</p><p style="margin-top:8px; color:#aaa;">简介：高等王子@giant mountain的0号死侍</p><p style="margin-top:8px; color:#aaa;">是贱侣是真爱是精神病人</p>` }
+    }
+
+    const mask = document.getElementById("mask");
+    const winTitle = document.getElementById("win-title");
+    const winContent = document.getElementById("win-content");
+    const closeBtn = document.getElementById("close");
+    const chatFullPage = document.getElementById("chatFullPage");
+    const chatBack = document.getElementById("chatBack");
+    const sendBtn = document.getElementById("sendBtn");
+    const chatInput = document.getElementById("chatInput");
+    const chatContent = document.getElementById("chatContent");
+    const chatBadge = document.getElementById("chatBadge");
+    
+    const xFullPage = document.getElementById("xFullPage");
+    const xBack = document.getElementById("xBack");
+    const xSettings = document.getElementById("xSettings");
+    const xCompose = document.getElementById("xCompose");
+    
+    const xComposePage = document.getElementById("xComposePage");
+    const composeCancel = document.getElementById("composeCancel");
+    const composePostBtn = document.getElementById("composePostBtn");
+    const composeInput = document.getElementById("composeInput");
+    
+    const xScroll = document.getElementById("xScroll");
+    const emptyTip = document.getElementById("emptyTip");
+    const tweetContainer = document.getElementById("tweetContainer");
+    const xDetailPage = document.getElementById("xDetailPage");
+    const detailBack = document.getElementById("detailBack");
+    
+    const notifyPopup = document.getElementById("notifyPopup");
+    const popupClose = document.getElementById("popupClose");
+    const chatNotifyPopup = document.getElementById("chatNotifyPopup");
+    const igNotifyPopup = document.getElementById("igNotifyPopup");
+    const igBadge = document.getElementById("igBadge");
+    const igFullPage = document.getElementById("igFullPage");
+    const igProfilePage = document.getElementById("igProfilePage");
+    const igPostPage = document.getElementById("igPostPage");
+    const igPostBack = document.getElementById("igPostBack");
+    const igFeedBack = document.getElementById("igFeedBack");
+    const igProfileBack = document.getElementById("igProfileBack");
+    
+    const igCommentsPage = document.getElementById("igCommentsPage");
+    const igCommentsBack = document.getElementById("igCommentsBack");
+    const igFeedCommentIcon = document.getElementById("igFeedCommentIcon");
+    const igCommentList = document.getElementById("igCommentList");
+    const igCommentInput = document.getElementById("igCommentInput");
+    const igCommentSend = document.getElementById("igCommentSend");
+    const igCommentsScroll = document.getElementById("igCommentsScroll");
+
+    const cameraPage = document.getElementById("cameraPage");
+    const camBackBtn = document.getElementById("camBackBtn");
+    const photosPage = document.getElementById("photosPage");
+    const photosClose = document.getElementById("photosClose");
+    const photosDone = document.getElementById("photosDone");
+    const remindersPage = document.getElementById("remindersPage");
+    const remBackBtn = document.getElementById("remBackBtn");
+    const remDoneBtn = document.getElementById("remDoneBtn");
+    const musicPage = document.getElementById("musicPage");
+    const musicBackBtn = document.getElementById("musicBackBtn");
+
+    // X 推文数据模型
+    let tweetsData = []; 
+    let originalTweetAdded = false;
+    let customTweetAdded = false;
+    let userTweetPosted = false; // 💡 新增：控制自由发帖只能发一次
+
+    // 渲染推文列表
+    function renderTweets() {
+        if (tweetsData.length === 0) {
+            emptyTip.style.display = "block";
+            tweetContainer.innerHTML = "";
+            return;
+        }
+        emptyTip.style.display = "none";
+        tweetContainer.innerHTML = "";
+        
+        tweetsData.forEach(tweet => {
+            const div = document.createElement("div");
+            div.className = "x-post-home";
+            div.onclick = () => openTweetDetail(tweet);
+            
+            let mediaHtml = tweet.image ? `<div class="x-post-media"><img src="${tweet.image}"></div>` : "";
+            let totalComments = (tweet.comments || 0) + (tweet.customComments ? tweet.customComments.length : 0);
+
+            div.innerHTML = `
+                <div class="x-post-head">
+                    <img class="x-post-avatar" src="${tweet.avatar}">
+                    <span class="x-post-name">${tweet.name}</span>
+                    <span class="x-post-verified">✔</span>
+                    <span class="x-post-meta">${tweet.idStr} · 刚刚</span>
+                </div>
+                <div class="x-post-body">${tweet.text}</div>
+                ${mediaHtml}
+                <div class="x-post-stats">
+                    <div class="stat-item">
+                        <svg width="18" height="18" viewBox="0 0 24 24"><path d="M21.99 4c0-1.1-.89-2-1.99-2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h14l4 4-.01-18z"/></svg>
+                        <span>${totalComments}</span>
+                    </div>
+                    <div class="stat-item">
+                        <svg width="18" height="18" viewBox="0 0 24 24"><path d="M6.99 11L3 15l3.99 4v-3H16v-2H6.99v-3zM21 9l-3.99-4v3H8v2h9.01v3L21 9z"/></svg>
+                        <span>${tweet.retweets || 0}</span>
+                    </div>
+                    <div class="stat-item">
+                        <svg width="18" height="18" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                        <span>${tweet.likes || 0}</span>
+                    </div>
+                    <div class="stat-item">
+                        <svg width="18" height="18" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/></svg>
+                        <span>${tweet.views || 0}</span>
+                    </div>
+                </div>
+            `;
+            tweetContainer.appendChild(div);
+        });
+    }
+
+    // 原有的推文数据
+    const originalTweetObj = {
+        id: "tweet-original",
+        name: "帅气风暴",
+        idStr: "@mountain",
+        avatar: "https://s1.imagehub.cc/images/2026/10/27/182459318295fa79a2999dc9bba7fa17.jpg",
+        text: "好爱我家公主啊",
+        image: "https://s1.imagehub.cc/images/2026/10/27/a629e8183e0858d5fae12b39e92fbe02.jpg",
+        comments: 82, retweets: 81, likes: 3057, views: "15.6万",
+        time: "1:33 AM · 10/27/2026",
+        hasCharReply: true,
+        customComments: []
+    };
+
+    // 用户新发的推文数据（模板）
+    const newTweetObj = {
+        id: "tweet-new",
+        name: "o公主",
+        idStr: "@oinyourheart",
+        avatar: "https://s1.imagehub.cc/images/2026/10/26/1bb64f1194ef5f347457e8d2e15bd42b.png",
+        text: "每天一打开相册看到的都是韩大山的脸这相册这辈子有了根本 不知道是什么时候拍的不是男友是黑客入侵我的相册",
+        image: "",
+        comments: 0, retweets: 0, likes: 0, views: "0",
+        time: "刚刚",
+        hasCharReply: true,
+        isCustom: true,
+        customComments: []
+    };
+
+    // 第一次对话结束触发
+    let tweetReady = false;
+    function finishAllChat(){
+        tweetReady = true;
+        originalTweetAdded = true;
+        // 无论何时，原推文永远插在最前面
+        tweetsData.unshift(originalTweetObj);
+        renderTweets();
+        requestAnimationFrame(() => { notifyPopup.classList.add("show"); });
+    }
+
+    // 发文逻辑
+    xCompose.onclick = () => {
+        xComposePage.style.display = "flex";
+        if (!userTweetPosted) {
+            // 第一次进，预填内容，允许发布
+            composeInput.value = "每天一打开相册看到的都是韩大山的脸这相册这辈子有了根本 不知道是什么时候拍的不是男友是黑客入侵我的相册";
+            composePostBtn.classList.add("active");
+        } else {
+            // 第二次进，清空内容，置灰发布按钮
+            composeInput.value = "";
+            composePostBtn.classList.remove("active");
+        }
+        composeInput.focus();
+    };
+    composeCancel.onclick = () => {
+        xComposePage.style.display = "none";
+    };
+    
+    composeInput.oninput = () => {
+        if (userTweetPosted) return; // 如果已经发过了，就不让按钮亮起
+        if (composeInput.value.trim() !== "") {
+            composePostBtn.classList.add("active");
+        } else {
+            composePostBtn.classList.remove("active");
+        }
+    };
+
+    composePostBtn.onclick = () => {
+        if (userTweetPosted) return; // 💡 核心拦截：防止重复发布
+        
+        const text = composeInput.value.trim();
+        if (!text) return;
+
+        // 创建新推文数据
+        const postedTweet = { ...newTweetObj, text: text, customComments: [] };
+        
+        if (!originalTweetAdded) {
+            // 如果原推文还没出现，这条新推文先占位
+            tweetsData.push(postedTweet); 
+        } else {
+            // 原推文已经在了，直接推入数组后面
+            tweetsData.push(postedTweet);
+        }
+        
+        customTweetAdded = true;
+        userTweetPosted = true; // 💡 标记已发送
+        composeInput.value = "";
+        composePostBtn.classList.remove("active");
+        xComposePage.style.display = "none";
+        
+        renderTweets(); // 重新渲染列表
+    };
+
+    // 打开推文详情页
+    let currentDetailTweet = null;
+    function openTweetDetail(tweet) {
+        currentDetailTweet = tweet;
+        xDetailPage.style.display = "flex";
+        replyWrap.style.display = "none";
+        replyInput.value = "";
+        replySend.disabled = true;
+        
+        // 渲染详情页主推文
+        const detailContainer = document.getElementById("detailPostContainer");
+        let mediaHtml = tweet.image ? `<div class="detail-post-media"><img src="${tweet.image}"></div>` : "";
+        let verifiedIcon = tweet.isCustom ? "" : `<span class="x-post-verified">✔</span>`;
+        let followBtn = tweet.isCustom ? "" : `<button class="follow-btn">已关注</button>`;
+
+        detailContainer.innerHTML = `
+            <div class="x-detail-post">
+                <div class="detail-post-head">
+                    <img class="detail-post-avatar" src="${tweet.avatar}">
+                    <div class="detail-post-head-main">
+                        <div class="detail-post-name-row">
+                            <span class="detail-post-name">${tweet.name}</span>
+                            ${verifiedIcon}
+                        </div>
+                        <span class="detail-post-id">${tweet.idStr}</span>
+                    </div>
+                    ${followBtn}
+                    <svg class="detail-more-btn" width="20" height="20" viewBox="0 0 24 24">
+                        <path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/>
+                    </svg>
+                </div>
+                <div class="detail-post-body">${tweet.text}</div>
+                ${mediaHtml}
+                <div class="detail-post-meta">
+                    ${tweet.time}<br>
+                    <span class="view-count"><b>${tweet.views}</b> 次浏览</span>
+                </div>
+                <div class="detail-post-divider"></div>
+                <div class="detail-post-actions">
+                    <div class="detail-action-item" id="actComment">
+                        <svg width="18" height="18" viewBox="0 0 24 24"><path d="M21.99 4c0-1.1-.89-2-1.99-2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h14l4 4-.01-18z"/></svg>
+                        <span id="actCommentNum">${tweet.comments + (tweet.customComments ? tweet.customComments.length : 0)}</span>
+                    </div>
+                    <div class="detail-action-item" id="actRetweet">
+                        <svg width="18" height="18" viewBox="0 0 24 24"><path d="M6.99 11L3 15l3.99 4v-3H16v-2H6.99v-3zM21 9l-3.99-4v3H8v2h9.01v3L21 9z"/></svg>
+                        <span>${tweet.retweets}</span>
+                    </div>
+                    <div class="detail-action-item" id="actLike">
+                        <svg width="18" height="18" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                        <span id="actLikeNum">${tweet.likes}</span>
+                    </div>
+                    <div class="detail-action-item" id="actBookmark">
+                        <svg width="18" height="18" viewBox="0 0 24 24"><path d="M17 3H7c-1.1 0-2 .9-2 2v16l7-3 7 3V5c0-1.1-.9-2-2-2z"/></svg>
+                    </div>
+                    <div class="detail-action-item">
+                        <svg width="18" height="18" viewBox="0 0 24 24"><path d="M16 6v2h2v10H6V8h2V6H6c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-2zm-3-4.07V1h-2v.93C8.09 1.46 6 4.1 6 7h12c0-2.9-2.09-5.54-5-5.07z"/></svg>
+                        <span>${tweet.views}</span>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        // 重置状态
+        likeOn = false; retweetOn = false; bookmarkOn = false;
+        
+        // 绑定互动事件
+        bindDetailEvents();
+
+        // 渲染评论
+        renderDetailComments();
+    }
+
+    // 动态绑定详情页的点赞/转发等事件
+    function bindDetailEvents() {
+        const actRetweet = document.getElementById("actRetweet");
+        const actLike = document.getElementById("actLike");
+        const actLikeNum = document.getElementById("actLikeNum");
+        const actComment = document.getElementById("actComment");
+        const actBookmark = document.getElementById("actBookmark");
+        
+        if (likeOn) actLike.classList.add("active"); else actLike.classList.remove("active");
+        if (retweetOn) actRetweet.classList.add("active"); else actRetweet.classList.remove("active");
+        if (bookmarkOn) actBookmark.classList.add("active"); else actBookmark.classList.remove("active");
+
+        actRetweet.onclick = ()=>{ retweetOn = !retweetOn; actRetweet.classList.toggle("active", retweetOn); };
+        actLike.onclick = ()=>{ 
+            likeOn = !likeOn; 
+            actLike.classList.toggle("active", likeOn); 
+            actLikeNum.textContent = parseInt(actLikeNum.textContent) + (likeOn ? 1 : -1);
+        };
+        actBookmark.onclick = ()=>{ bookmarkOn = !bookmarkOn; actBookmark.classList.toggle("active", bookmarkOn); };
+
+        actComment.onclick = ()=>{
+            replyingToChar = false;
+            replyWrap.style.display = "flex";
+            replyInput.placeholder = "发布你的回复";
+            replyInput.value = "";
+            replyInput.style.fontSize = "14px";
+            replyInput.style.color = "#fff";
+            replySend.disabled = true;
+            replyInput.focus();
+        };
+    }
+
+    // 渲染评论列表
+    function renderDetailComments() {
+        const commentContainer = document.getElementById("commentContainer");
+        commentContainer.innerHTML = "";
+        
+        const tweet = currentDetailTweet;
+        
+        if (tweet.isCustom) {
+            // 自定义推文，等待2秒后显示 char 的回复
+            if (tweet.customComments.length === 0) {
+                commentContainer.innerHTML = `<div class="empty-tip" style="padding:20px; color:#71767b; text-align:center;">加载评论中...</div>`;
+                setTimeout(() => {
+                    if (tweet.customComments.length === 0) {
+                        tweet.customComments.push({
+                            name: "帅气风暴",
+                            id: "@mountain",
+                            text: "入侵你的心",
+                            avatar: "https://s1.imagehub.cc/images/2026/10/27/182459318295fa79a2999dc9bba7fa17.jpg",
+                            isChar: true
+                        });
+                        renderDetailComments();
+                        // 同时也刷新一下首页的数据
+                        renderTweets();
+                    }
+                }, 2000);
+            } else {
+                // 渲染已保存的评论
+                tweet.customComments.forEach(item=>{
+                    const div = document.createElement("div");
+                    div.className = "comment-item";
+                    div.innerHTML = `
+                        <div class="comment-head">
+                            <img class="comment-avatar" src="${item.avatar}">
+                            <span class="comment-name">${item.name}</span>
+                            ${item.isChar ? '<span class="x-post-verified">✔</span>' : ''}
+                            <span class="comment-id">${item.id}</span>
+                        </div>
+                        <div class="comment-body">${item.text}</div>
+                        <div class="comment-reply-row">
+                            <span class="comment-reply-btn ${item.isChar ? '' : 'disabled'}" data-target="${item.isChar}">
+                                <svg width="14" height="14" viewBox="0 0 24 24"><path d="M21.99 4c0-1.1-.89-2-1.99-2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h14l4 4-.01-18z"/></svg>
+                                回复
+                            </span>
+                            <div class="comment-stats">
+                                <span class="comment-stat-item"><svg width="13" height="13" viewBox="0 0 24 24"><path d="M6.99 11L3 15l3.99 4v-3H16v-2H6.99v-3zM21 9l-3.99-4v3H8v2h9.01v3L21 9z"/></svg></span>
+                                <span class="comment-stat-item"><svg width="13" height="13" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg></span>
+                                <span class="comment-stat-item"><svg width="13" height="13" viewBox="0 0 24 24"><path d="M17 3H7c-1.1 0-2 .9-2 2v16l7-3 7 3V5c0-1.1-.9-2-2-2z"/></svg></span>
+                                <span class="comment-stat-item"><svg width="13" height="13" viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg></span>
+                            </div>
+                        </div>
+                    `;
+                    commentContainer.appendChild(div);
+                });
+
+                // 针对自定义推文，给 isChar 的评论绑定点击事件
+                document.querySelectorAll('.comment-reply-btn[data-target="true"]').forEach(btn=>{
+                    btn.onclick = ()=>{
+                        replyingToChar = true;
+                        replyWrap.style.display = "flex";
+                        replyInput.placeholder = "发布你的回复";
+                        replyInput.focus();
+                        replyInput.value = ""; // 不预填，让 user 自己打字
+                        replyInput.style.fontSize = "14px";
+                        replyInput.style.color = "#fff";
+                        replySend.disabled = true;
+                    };
+                });
+            }
+        } else {
+            // 原始推文逻辑，渲染写好的列表
+            commentList.forEach(item=>{
+                const div = document.createElement("div");
+                div.className = "comment-item";
+                div.innerHTML = `
+                    <div class="comment-head">
+                        <img class="comment-avatar" src="${item.avatar}">
+                        <span class="comment-name">${item.name}</span>
+                        <span class="comment-id">${item.id}</span>
+                    </div>
+                    <div class="comment-body">${item.text}</div>
+                    <div class="comment-reply-row">
+                        <span class="comment-reply-btn ${item.target ? '' : 'disabled'}" data-target="${item.target}">
+                            <svg width="14" height="14" viewBox="0 0 24 24"><path d="M21.99 4c0-1.1-.89-2-1.99-2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h14l4 4-.01-18z"/></svg>
+                            回复
+                        </span>
+                        <div class="comment-stats">
+                            <span class="comment-stat-item"><svg width="13" height="13" viewBox="0 0 24 24"><path d="M6.99 11L3 15l3.99 4v-3H16v-2H6.99v-3zM21 9l-3.99-4v3H8v2h9.01v3L21 9z"/></svg></span>
+                            <span class="comment-stat-item"><svg width="13" height="13" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg></span>
+                            <span class="comment-stat-item"><svg width="13" height="13" viewBox="0 0 24 24"><path d="M17 3H7c-1.1 0-2 .9-2 2v16l7-3 7 3V5c0-1.1-.9-2-2-2z"/></svg></span>
+                            <span class="comment-stat-item"><svg width="13" height="13" viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg></span>
+                        </div>
+                    </div>
+                `;
+                commentContainer.appendChild(div);
+            });
+
+            // 将用户之前发的评论渲染出来（布局与上面 commentList 统一）
+            if (tweet.customComments.length > 0) {
+                tweet.customComments.forEach(item=>{
+                    const div = document.createElement("div");
+                    div.className = "comment-item";
+                    div.innerHTML = `
+                        <div class="comment-head">
+                            <img class="comment-avatar" src="${item.avatar}">
+                            <span class="comment-name">${item.name}</span>
+                            ${item.isChar ? '<span class="x-post-verified">✔</span>' : ''}
+                            <span class="comment-id">${item.id}</span>
+                        </div>
+                        <div class="comment-body">${item.text}</div>
+                        <div class="comment-reply-row">
+                            <span class="comment-reply-btn disabled">
+                                <svg width="14" height="14" viewBox="0 0 24 24"><path d="M21.99 4c0-1.1-.89-2-1.99-2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h14l4 4-.01-18z"/></svg>
+                                回复
+                            </span>
+                            <div class="comment-stats">
+                                <span class="comment-stat-item"><svg width="13" height="13" viewBox="0 0 24 24"><path d="M6.99 11L3 15l3.99 4v-3H16v-2H6.99v-3zM21 9l-3.99-4v3H8v2h9.01v3L21 9z"/></svg></span>
+                                <span class="comment-stat-item"><svg width="13" height="13" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg></span>
+                                <span class="comment-stat-item"><svg width="13" height="13" viewBox="0 0 24 24"><path d="M17 3H7c-1.1 0-2 .9-2 2v16l7-3 7 3V5c0-1.1-.9-2-2-2z"/></svg></span>
+                                <span class="comment-stat-item"><svg width="13" height="13" viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg></span>
+                            </div>
+                        </div>
+                    `;
+                    commentContainer.appendChild(div);
+                });
+            }
+
+            document.querySelectorAll('.comment-reply-btn[data-target="true"]').forEach(btn=>{
+                btn.onclick = ()=>{
+                    replyingToChar = true;
+                    replyWrap.style.display = "flex";
+                    replyInput.placeholder = "发布你的回复";
+                    replyInput.focus();
+                    replyInput.value = "什么嘴脸";
+                    replyInput.style.fontSize = "13px";
+                    replyInput.style.color = "#9aa0a6";
+                    replySend.disabled = false;
+                };
+            });
+        }
+    }
+
+    // 聊天逻辑变量
+    const commentList = [
+        { name:"极品六字id", id:"@efrcwg", text:"兄弟你让盗号了啊?", avatar:"https://s1.imagehub.cc/images/2026/10/27/d15b6fdfa2b1ab6d87df76e89f59be6c.png", target:false },
+        { name:"暴躁老奶大战奥特曼 只为夺回28000的假牙", id:"@nfdseg", text:"她是不是又给你买克罗心了", avatar:"https://s1.imagehub.cc/images/2026/10/27/d15b6fdfa2b1ab6d87df76e89f59be6c.png", target:false },
+        { name:"帅气风暴", id:"@mountain", text:"买的不是克罗心 是我这敏感脆弱渴望被爱的心", avatar:"https://s1.imagehub.cc/images/2026/10/27/182459318295fa79a2999dc9bba7fa17.jpg", target:true },
+        { name:"人善变人妻", id:"@ndgcw", text:"男人再穷也不能 后边我忘了", avatar:"https://s1.imagehub.cc/images/2026/10/27/d15b6fdfa2b1ab6d87df76e89f59be6c.png", target:false }
+    ];
+
+    let likeOn = false, retweetOn = false, bookmarkOn = false, replyCount = 4, replyingToChar = false;
+    let hasRepliedToChar = false; 
+
+    // 自由聊天的解锁状态
+    let freeChatUnlocked = false;
+
+    // 自由聊天词库
+    const freeChatRules = [
+        {
+            keywords: ["我爱你", "喜欢你", "love you", "love u", "i love", "爱", "喜欢"],
+            replies: ["我也好爱你", "我也爱你，老婆"]
+        },
+        {
+            keywords: ["想你了", "想我了吗", "miss you", "miss u", "想你", "想我"],
+            replies: ["我也想你 乖乖等我", "想我就亲我一下"]
+        },
+        {
+            keywords: ["晚安", "睡觉了", "good night", "gn", "睡"],
+            replies: ["晚安宝宝 梦里要有我", "乖乖睡觉 明天见", "去睡吧 就算睡着了我也陪着你"]
+        },
+        {
+            keywords: ["不理你了", "哼", "生气", "angry", "气"],
+            replies: ["真的不理了？那我可要伤心了TAT", "别啊老婆 我错了TAT"]
+        },
+        {
+            keywords: ["滚"],
+            replies: ["滚到你怀里来", "滚远了可就不回来了哼"]
+        },
+        {
+            keywords: ["饿了", "想吃饭", "hungry", "饿", "吃"],
+            replies: ["想吃什么哥哥带你去"]
+        },
+        {
+            keywords: ["困了", "好累", "tired", "sleepy", "困", "累"],
+            replies: ["躺好 给你捏捏", "来我怀里睡"]
+        },
+        {
+            keywords: ["在干嘛", "干嘛呢", "what are you doing", "doing", "干嘛", "干什么"],
+            replies: ["在想你啊", "刚忙完 正准备找你", "在想你什么时候来找我", "在等你的消息啊"]
+        },
+        {
+            keywords: ["亲亲", "mua", "kiss", "亲"],
+            replies: ["亲亲（疯狂亲）", "只有亲亲吗TAT是不是还缺个抱抱"]
+        },
+        {
+            keywords: ["抱抱", "抱", "hug"],
+            replies: ["抱紧你了🥺"]
+        },
+        {
+            keywords: ["老公", "男朋友", "宝宝", "宝贝", "哥哥", "baby", "honey", "darling"],
+            replies: ["哎 怎么了老婆～", "哎 怎么了宝宝～"]
+        },
+        {
+            keywords: ["狗狗", "小狗", "猫猫", "小猫", "dog", "cat", "狗", "猫"],
+            replies: ["汪汪", "喵喵"]
+        },
+        {
+            keywords: ["笨蛋", "傻子", "stupid", "fool", "笨", "傻"],
+            replies: ["那我这么笨 你可不能不要我"]
+        }
+    ];
+
+    const defaultReplies = ["嗯？我在听", "怎么啦宝宝", "你说什么我都爱听", "（摸摸头）", "我在呢"];
+
+    const chatRound1 = [
+        {u:"", c:["我醒了"]}, {u:"你怎么不睡到明天", c:["那我继续睡了"]},
+        {u:"回去就掐死你", c:["你在哪呢"]}, {u:"和cc在咖啡厅聊天", c:["怪不得打扮的那么漂亮","原来今天是女孩日"]},
+        {u:"你什么时候看到的", c:["goodbye kiss的时候","没睁开眼睛","但是闻到了你喷的香水味","一猜就知道今天肯定漂亮"]},
+        {u:"你是不是背着我偷摸玩语擦去了", c:["🙄","你穿的什么 今天好冷"]}, {u:"前几天新买的那身", c:["冻死你"]},
+        {u:"今天都晒死了", c:["是吗 那为什么我感觉好冷"]}, {u:"把你手里的冰淇淋放下", c:["哦","好好吃","你想吃吗"]},
+        {u:"可以", c:["那你回来的时候买吧","我要香草的"]}, {u:"要点脸吧", c:["我哪有脸 早都给你了"]},
+        {u:"婉拒", c:["好想你","快点回来","快点回来","快点回来","快"]}, {u:"知道了知道了", c:["冰淇淋别忘买","🥺"]}
+    ];
+    const chatRound2 = [
+        {u:"吃空气", c:["饿死我对你有什么好处","不会是想饿死我然后换新男友吧","我告诉你 这是不可能的","我已经在冰箱里面找到了一盒牛奶","我死不了你气不气"]},
+        {u:"别喝", c:["想换新男友 下辈子吧"]}, {u:"你真别喝", c:["喝没了","气死了吧"]},
+        {u:"真喝完了？", c:["喝了"]}, {u:"过期了", c:["?"]}, {u:"我本来想扔掉来着", c:[]},
+        {u:"出门太着急给忘了", c:[]}, {u:"恭喜你啊", c:["肚子好痛啊"]},
+        {u:"好心疼你哦", c:[]}, 
+        {u:"给你买布丁好不好", c:["十个"]},
+        {u:"可以", c:["反悔是狗"]},
+        {u:"ok", c:["傻子","我买回来的牛奶我怎么能不记得保质期"]}, {u:"啊西", c:["被我骗到了吧哈哈哈哈哈哈哈","谢谢我宝宝大人的布丁^_^","不买是狗哦"]}
+    ];
+    const chatRound3 = [
+        {u:"又长了颗痘", c:[]},
+        {u:"真烦", c:[
+            {img:"https://s1.imagehub.cc/images/2026/10/28/d90a65aeef74fcf220900cd4870b0a61.jpg"},
+            "还烦吗"
+        ]},
+        {u:"更烦了", c:[]},
+        {u:"啊西 我又胖了两斤", c:["亲爱的"]},
+        {u:"不要说我胖了也很可爱的这种话", c:["🙄"]},
+        {u:"如果变丑了变胖了你还会爱我吗", c:[]},
+        {u:"敢回答我不想听的你就死定了", c:[
+            "怎么这么可爱啊",
+            "干嘛有这种想法",
+            "为什么要觉得我是那种很容易移情别恋的人",
+            "在一起这么久还有着这种想法",
+            "那这一定是我这个男朋友的问题咯"
+        ]},
+        {u:"事实就是人都喜欢美丽的事物", c:["我早上起来头发乱得像鸡窝的时候帅吗"]},
+        {u:"你什么样子我没见过😒", c:["我什么样子你都喜欢 对吧"]},
+        {u:"嗯嗯嗯嗯嗯", c:["我是有什么非常特别的地方吗", "也没有吧"]},
+        {u:"算我情人眼里出西施行了吧", c:[]},
+        {u:"看吧 我好爱你", c:[
+            "如果没有你的爱",
+            "我就只是一个普通人而已",
+            "事实就是这样",
+            "因为你爱我",
+            "所以你觉得我特别"
+        ]},
+        {u:"你这样很像一个花花公子在敷衍女孩", c:[
+            "我还不够真心吗",
+            "那我再努力一下",
+            "早上醒来水肿的脸很可爱 姨妈期来临前冒出痘痘的脸也很可爱 因为智齿发炎肿得不像样的脸也很可爱",
+            "体重只是一个数字而已",
+            "我抱起来也没区别",
+            "我最近也胖了 你感觉出来了吗"
+        ]},
+        {u:"怪不得感觉床变小了", c:["呀"]},
+        {u:"好吧好吧 你继续", c:[
+            "你有时候很让我头疼 因为美丽完全不顾自己的身体状况",
+            "要么节食 要么干脆不吃",
+            "是不是对自己太苛刻了呢"
+        ]},
+        {u:"美丽总是要付出代价的", c:["那我不吃饭的时候你在想什么"]},
+        {u:"生气", c:[
+            "我也好生气",
+            "你不好好吃饭的时候我非常生气啊",
+            "在想这个人到底要漂亮到什么程度才能知足 明明现在就已经很漂亮了"
+        ]},
+        {u:"你肯定是偷偷玩语擦了", c:["因为嘴甜吗", "但我真的非常真心"]},
+        {u:"看出来了", c:["还在烦吗"]},
+        {u:"你好像真的有点爱我", c:[
+            "在说什么啊哈哈哈哈",
+            "我看起来只有一点吗",
+            "那我现在要让你明确的知道",
+            "我就像你爱我一样爱你",
+            "知道了吗",
+            "知道了吗！"
+        ]},
+        {u:"知道了知道了", c:["打视频吧", "让我看看我家小漂亮今天又漂亮成什么样子了"]}
+    ];
+
+    let currentRound = 0, chatGroups = chatRound1, groupIndex = 0;
+    let currentTime = new Date(2025,0,1,12,45,0);
+    let isBusy = false, msgCount = 0, round2Started = false, round3Started = false;
+
+    function formatTime(d){ return `${d.getHours().toString().padStart(2,'0')}:${d.getMinutes().toString().padStart(2,'0')}`; }
+    function addTwoMin(d){ return new Date(d.getTime() + 2 * 60 * 1000); }
+    
+    function addMsg(isUser, text){
+        msgCount++;
+        if(msgCount >= 4){ currentTime = addTwoMin(currentTime); msgCount = 0; }
+        let timeStr = formatTime(currentTime);
+        let dom = document.createElement('div');
+        if(isUser){
+            dom.className = "msg-row-right";
+            dom.innerHTML = `<div class="bubble-wrap-right"><div class="msg-bubble-right">${text}</div><span class="msg-time-right">${timeStr}</span></div>`;
+        }else{
+            dom.className = "msg-row-left";
+            dom.innerHTML = `<img class="chat-avatar" src="https://s1.imagehub.cc/images/2026/10/27/a629e8183e0858d5fae12b39e92fbe02.jpg"><div class="bubble-wrap-left"><div class="msg-bubble-left">${text}</div><span class="msg-time-left">${timeStr}</span></div>`;
+        }
+        chatContent.appendChild(dom);
+        chatContent.scrollTop = chatContent.scrollHeight;
+    }
+
+    // 添加图片消息
+    function addImageMsg(isUser, imgUrl) {
+        msgCount++;
+        if(msgCount >= 4){ currentTime = addTwoMin(currentTime); msgCount = 0; }
+        let timeStr = formatTime(currentTime);
+        let dom = document.createElement('div');
+        if(isUser){
+            dom.className = "msg-row-right";
+            dom.innerHTML = `<div class="bubble-wrap-right"><div class="msg-bubble-right" style="padding: 4px;"><img class="chat-img-bubble" src="${imgUrl}"></div><span class="msg-time-right">${timeStr}</span></div>`;
+        }else{
+            dom.className = "msg-row-left";
+            dom.innerHTML = `<img class="chat-avatar" src="https://s1.imagehub.cc/images/2026/10/27/a629e8183e0858d5fae12b39e92fbe02.jpg"><div class="bubble-wrap-left"><div class="msg-bubble-left" style="padding: 4px;"><img class="chat-img-bubble" src="${imgUrl}"></div><span class="msg-time-left">${timeStr}</span></div>`;
+        }
+        chatContent.appendChild(dom);
+        chatContent.scrollTop = chatContent.scrollHeight;
+    }
+
+    // 添加通话记录卡片
+    function addCallLog(type, duration = "") {
+        let timeStr = formatTime(new Date(2026, 3, 3, 15, 0, 0)); // 固定用下午3点
+        let dom = document.createElement('div');
+        dom.className = "call-log-left";
+        
+        if (type === 'start') {
+            dom.innerHTML = `
+                <img class="chat-avatar" src="https://s1.imagehub.cc/images/2026/10/27/a629e8183e0858d5fae12b39e92fbe02.jpg">
+                <div class="call-log-bubble green">
+                    <div class="call-icon">
+                        <svg viewBox="0 0 24 24"><path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z"/></svg>
+                    </div>
+                    <div>
+                        <div class="call-log-text">Video Call</div>
+                    </div>
+                </div>
+                <span class="msg-time-left">${timeStr}</span>
+            `;
+        } else if (type === 'end') {
+            dom.innerHTML = `
+                <img class="chat-avatar" src="https://s1.imagehub.cc/images/2026/10/27/a629e8183e0858d5fae12b39e92fbe02.jpg">
+                <div class="call-log-bubble white">
+                    <div class="call-icon">
+                        <svg viewBox="0 0 24 24"><path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z"/></svg>
+                    </div>
+                    <div>
+                        <div class="call-log-text">End video call</div>
+                        <div class="call-log-sub">${duration}</div>
+                    </div>
+                </div>
+                <span class="msg-time-left">${timeStr}</span>
+            `;
+        }
+        chatContent.appendChild(dom);
+        chatContent.scrollTop = chatContent.scrollHeight;
+    }
+
+    async function runCharReply(){
+        isBusy = true;
+        sendBtn.disabled = true;
+        chatInput.value = "";
+        chatInput.placeholder = "Enter a message";
+        const replies = chatGroups[groupIndex].c;
+        for(let i=0;i<replies.length;i++){
+            await new Promise(resolve=>setTimeout(resolve,2000));
+            if(typeof replies[i] === 'object' && replies[i].img){
+                addImageMsg(false, replies[i].img);
+            } else {
+                addMsg(false, replies[i]);
+            }
+        }
+        isBusy = false;
+        groupIndex++;
+        if(groupIndex >= chatGroups.length){
+            sendBtn.disabled = true;
+            chatInput.placeholder = "Enter a message";
+            if(currentRound === 0){
+                finishAllChat();
+            }else if(currentRound === 1){
+                igBadge.style.display = "flex";
+                igUnlocked = true;
+                document.querySelectorAll(".house-btn").forEach(btn => btn.classList.remove("ig-house-locked"));
+                
+                // 准备第三段对话的状态，但不预填输入框
+                currentRound = 2;
+                chatGroups = chatRound3;
+                groupIndex = 0;
+                
+                requestAnimationFrame(()=>{ igNotifyPopup.classList.add("show"); });
+            } else if (currentRound === 2) {
+                // Round 3 结束，触发视频通话
+                setTimeout(() => {
+                    triggerIncomingCall();
+                }, 1500);
+            }
+        }else{
+            const next = chatGroups[groupIndex];
+            if (next.u) {
+                chatInput.value = next.u;
+            } else {
+                chatInput.value = "";
+                chatInput.placeholder = "Enter a message";
+            }
+            sendBtn.disabled = !next.u;
+        }
+    }
+
+    // 输入框实时监听：有字亮起发送键，没字灰掉
+    chatInput.addEventListener('input', () => {
+        if (chatInput.readOnly) return; // 只读状态不处理
+        sendBtn.disabled = chatInput.value.trim() === "";
+    });
+
+    sendBtn.onclick = async ()=>{
+        if(isBusy) return;
+
+        // 如果是已经解锁自由聊天的状态
+        if (freeChatUnlocked) {
+            const txt = chatInput.value.trim();
+            if (!txt) return;
+
+            // 1. 发送用户消息
+            addMsg(true, txt);
+            chatInput.value = "";
+            sendBtn.disabled = true; // 发完没字了，变灰
+            isBusy = true;
+
+            // 2. 延迟 1.5s 模拟对方正在输入
+            setTimeout(() => {
+                let matchedReply = null;
+                
+                // 3. 遍历词库寻找匹配
+                for (let rule of freeChatRules) {
+                    // 复合匹配：只要用户文本中包含任意一个关键词
+                    if (rule.keywords.some(kw => txt.includes(kw))) {
+                        // 随机抽一条回复
+                        const randomIndex = Math.floor(Math.random() * rule.replies.length);
+                        matchedReply = rule.replies[randomIndex];
+                        break; // 匹配到一个就跳出循环
+                    }
+                }
+
+                // 4. 如果没匹配到，走兜底
+                if (!matchedReply) {
+                    const randomIndex = Math.floor(Math.random() * defaultReplies.length);
+                    matchedReply = defaultReplies[randomIndex];
+                }
+
+                // 5. 发送 char 的消息
+                addMsg(false, matchedReply);
+                
+                isBusy = false;
+                // 如果用户此时打了字，就点亮发送键
+                if (chatInput.value.trim() !== "") {
+                    sendBtn.disabled = false;
+                }
+            }, 1500);
+            return; // 结束这次点击事件
+        }
+
+        // 正常的剧情推进
+        const group = chatGroups[groupIndex];
+        if(!group.u) return;
+
+        // 💥 强制修正：第三轮第一句话的时间锁定为 16:00
+        if (currentRound === 2 && groupIndex === 0) {
+            currentTime = new Date(2025, 0, 1, 16, 0, 0);
+            msgCount = 0;
+        }
+
+        addMsg(true, group.u);
+        
+        if(group.c.length>0) {
+            await runCharReply();
+        } else {
+            groupIndex++;
+            if(groupIndex < chatGroups.length) {
+                chatInput.value = chatGroups[groupIndex].u || "";
+                chatInput.style.fontSize = "14px";
+                chatInput.style.color = "#fff";
+                sendBtn.disabled = chatInput.value.trim() === "";
+            } else if (currentRound === 2) {
+                // 如果是第三轮对话发完了
+                setTimeout(() => {
+                    triggerIncomingCall();
+                }, 1500);
+            }
+        }
+    }
+
+    function startRound2(){
+        if(round2Started) return;
+        round2Started = true;
+        currentRound = 1;
+        chatGroups = chatRound2;
+        groupIndex = 0;
+        currentTime = new Date(2025,0,1,13,33,0);
+        msgCount = 0;
+        addMsg(false, "我好饿");
+        chatInput.value = chatRound2[0].u;
+        chatInput.style.fontSize = "14px";
+        chatInput.style.color = "#fff";
+        sendBtn.disabled = chatInput.value.trim() === "";
+    }
+
+    function openChat(){
+        chatFullPage.style.display = "flex";
+        chatNotifyPopup.classList.remove("show");
+        chatBadge.style.display = "none";
+        
+        // Round 1 初始化
+        if(currentRound === 0 && groupIndex === 0 && chatContent.children.length === 0){
+            currentTime = new Date(2025,0,1,12,45,0);
+            isBusy = false;
+            msgCount = 0;
+            addMsg(false, chatRound1[0].c[0]);
+            groupIndex++;
+            chatInput.value = chatRound1[groupIndex].u;
+            chatInput.style.fontSize = "14px";
+            chatInput.style.color = "#fff";
+            sendBtn.disabled = chatInput.value.trim() === "";
+        } 
+        // Round 3 初始化（若是看完 IG 弹窗后再次打开 Chat）
+        else if (currentRound === 2 && groupIndex === 0) {
+            if(!chatInput.value){
+                chatInput.value = chatRound3[0].u; // "又长了颗痘"
+                chatInput.style.fontSize = "14px";
+                chatInput.style.color = "#fff";
+            }
+            sendBtn.disabled = chatInput.value.trim() === "";
+        }
+    }
+
+    // ========== 视频通话逻辑 ==========
+    const callBanner = document.getElementById("callBanner");
+    const incomingCallPopup = document.getElementById("incomingCallPopup");
+    const videoCallPage = document.getElementById("videoCallPage");
+    const acceptCallBtn = document.getElementById("acceptCallBtn");
+    const hangupBtn = document.getElementById("hangupBtn");
+    const callTimer = document.getElementById("callTimer");
+    const callAudio = document.getElementById("callAudio");
+    
+    let callInterval = null;
+    let callSeconds = 0;
+
+    function formatCallTime(sec) {
+        const m = Math.floor(sec / 60).toString().padStart(2, '0');
+        const s = (sec % 60).toString().padStart(2, '0');
+        return `${m}:${s}`;
+    }
+
+    function triggerIncomingCall() {
+        // 1. 显示顶部横幅
+        callBanner.classList.add("show");
+        
+        // 2. 同时在聊天里生成绿色 Video Call 气泡
+        addCallLog('start');
+        
+        // 3. 绑定横幅点击事件，点击后进入全屏邀请界面
+        callBanner.onclick = (e) => {
+            // 拒绝按钮不再有取消功能，必须接听
+            callBanner.classList.remove("show");
+            incomingCallPopup.style.display = "flex";
+        };
+    }
+
+    // 用户不能主动打视频，去掉了 chatVideoCallBtn 的点击事件
+
+    acceptCallBtn.onclick = () => {
+        incomingCallPopup.style.display = "none";
+        videoCallPage.style.display = "flex";
+        
+        // 重置计时器
+        callSeconds = 0;
+        callTimer.textContent = "00:00";
+        clearInterval(callInterval);
+        callInterval = setInterval(() => {
+            callSeconds++;
+            callTimer.textContent = formatCallTime(callSeconds);
+        }, 1000);
+
+        // 等待 2 秒后再播放音频，只播放一次
+        setTimeout(() => {
+            callAudio.currentTime = 0;
+            callAudio.play().catch(e => console.log("音频播放被拦截或未配置链接", e));
+        }, 2000);
+    };
+
+    // 拒绝按钮不再有挂断功能，必须接听
+    // rejectCallBtn.onclick 整个删除
+
+    hangupBtn.onclick = () => {
+        videoCallPage.style.display = "none";
+        clearInterval(callInterval);
+        
+        // 停止并重置音频
+        callAudio.pause();
+        callAudio.currentTime = 0;
+
+        // 在聊天框里插入结束视频通话气泡
+        addCallLog('end', formatCallTime(callSeconds));
+
+        // 💥 核心解锁点：挂断电话后，解锁自由聊天
+        freeChatUnlocked = true;
+        chatInput.readOnly = false; // 解除输入框限制
+        chatInput.value = ""; // 清空原本预填的文字
+        chatInput.placeholder = "Enter a message"; // 恢复正常提示语
+        sendBtn.disabled = true; // 因为输入框空了，所以先把发送键灰掉
+        chatInput.focus(); // 自动让输入框获得焦点
+    };
+
+    // ==========================================
+
+    // --- IG 评论逻辑 (针对首页推文的互动) ---
+    let igCommentsData = [];
+    let igCharReplyStep = 0; // 控制Char的回复步骤
+
+    igFeedCommentIcon.onclick = () => {
+        igCommentsPage.style.display = "flex";
+        
+        // 只有在完全没有数据，且没有预填过的情况下，才预填“这谁？”
+        if (igCommentsData.length === 0 && igCommentInput.value === "") {
+            igCommentInput.value = "这谁？";
+            igCommentSend.disabled = false;
+            renderIgComments();
+        } else {
+            renderIgComments();
+        }
+    };
+
+    igCommentsBack.onclick = () => {
+        igCommentsPage.style.display = "none";
+    };
+
+    igCommentInput.oninput = () => {
+        igCommentSend.disabled = igCommentInput.value.trim() === "";
+    };
+
+    igCommentSend.onclick = () => {
+        const txt = igCommentInput.value.trim();
+        if(!txt) return;
+
+        // 添加 User 的评论
+        igCommentsData.push({
+            id: "user",
+            name: "oinyourheart",
+            avatar: "https://s1.imagehub.cc/images/2026/10/26/1bb64f1194ef5f347457e8d2e15bd42b.png",
+            text: txt,
+            isUser: true
+        });
+
+        igCommentInput.value = "";
+        igCommentSend.disabled = true;
+        renderIgComments();
+
+        if (igCharReplyStep === 0) {
+            // 2秒后 Char 第一次回复
+            setTimeout(() => {
+                igCommentsData.push({
+                    id: "char",
+                    name: "mountain",
+                    avatar: "https://s1.imagehub.cc/images/2026/10/27/182459318295fa79a2999dc9bba7fa17.jpg",
+                    text: "@oinyourheart 狗",
+                    isUser: false
+                });
+                renderIgComments();
+                
+                // Char 回复完后，预填 User 的“滚”
+                igCommentInput.value = "滚";
+                igCommentSend.disabled = false;
+                igCharReplyStep = 1;
+
+            }, 2000);
+        } else if (igCharReplyStep === 1) {
+            // 用户第二次发送（“滚”）—— 这条是对 char “狗” 的回复，不是独立评论
+            igCommentsData.push({
+                id: "user",
+                name: "oinyourheart",
+                avatar: "https://s1.imagehub.cc/images/2026/10/26/1bb64f1194ef5f347457e8d2e15bd42b.png",
+                text: txt,
+                isUser: true,
+                isReply: true
+            });
+            igCommentInput.value = "";
+            igCommentSend.disabled = true;
+            renderIgComments();
+
+            // 2秒后 Char 第二次回复
+            setTimeout(() => {
+                igCommentsData.push({
+                    id: "char",
+                    name: "mountain",
+                    avatar: "https://s1.imagehub.cc/images/2026/10/27/182459318295fa79a2999dc9bba7fa17.jpg",
+                    text: "@oinyourheart 亲亲",
+                    isUser: false
+                });
+                renderIgComments();
+                igCommentInput.value = "";
+                igCommentSend.disabled = true;
+                igCharReplyStep = 2; // 结束
+            }, 2000);
+        }
+    };
+
+    // 公用渲染 IG 评论的函数
+    function renderIgComments() {
+        igCommentList.innerHTML = "";
+        
+        // 如果没有评论，显示提示
+        if (igCommentsData.length === 0) {
+            igCommentList.innerHTML = `<div style="text-align:center; color:#8e8e93; padding:40px 20px; font-size:14px;">还没有评论，快来抢沙发吧！</div>`;
+            return;
+        }
+
+        igCommentsData.forEach(comment => {
+            const div = document.createElement("div");
+            div.className = "ig-comment-item";
+            
+            // 判断是否需要缩进：
+            // 1) char 的回复（文本自带 @）
+            // 2) 用户第二次发的、标记了 isReply 的评论（回复 char 的那条）
+            const isReply = comment.isReply || (comment.isUser === false && comment.text.includes("@"));
+            const indentStyle = isReply ? "margin-left: 44px;" : "";
+            
+            // 点击整条评论
+            div.onclick = () => {
+                if (comment.clickable) {
+                    igCommentInput.value = comment.prefill;
+                    igCommentSend.disabled = false;
+                    comment.clickable = false;
+                }
+            };
+
+            div.innerHTML = `
+                <div class="ig-comment-head" style="${indentStyle}">
+                    <img class="ig-comment-avatar" src="${comment.avatar}">
+                    <div class="ig-comment-content">
+                        <div class="ig-comment-name-row">
+                            <span class="ig-comment-name">${comment.name}</span>
+                            ${comment.isUser ? '' : '<span class="ig-comment-verified">✔</span>'}
+                            ${comment.isReply ? '<span style="font-size:12px;color:#8e8e93;">回复 @mountain</span>' : ''}
+                            <span class="ig-comment-time">刚刚</span>
+                        </div>
+                        <div class="ig-comment-text">${comment.text}</div>
+                        <div class="ig-comment-meta">
+                            <span class="ig-comment-reply-btn">回复</span>
+                        </div>
+                    </div>
+                    <div class="ig-comment-right">
+                        <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                        <span>1</span>
+                    </div>
+                </div>
+            `;
+            igCommentList.appendChild(div);
+        });
+        
+        igCommentsScroll.scrollTop = igCommentsScroll.scrollHeight;
+    }
+
+    // ==========================================
+    // 新增：IG 个人主页第二条图文 "不好喝" 交互逻辑
+    // ==========================================
+    let igPost2Comments = [];
+    let igPost2Step = 0; // 0=初始，1=已回复couple day，2=已回复你们几个
+    let currentIgPost2Target = null; // 当前点击的评论对象
+
+    function openIgPost2() {
+        // 切换到图2的界面
+        document.getElementById("igPostImg").src = "https://s1.imagehub.cc/images/2026/10/28/87b2dc536258342333eeb7a29efde9e7.jpg";
+        document.getElementById("igPostCaption").innerHTML = "不好喝";
+        igPostPage.style.display = "flex";
+
+        // 绑定这个图文的评论图标点击事件
+        const commentIcon = igPostPage.querySelector('.ig-post-actions svg:nth-child(2)');
+        
+        // 我们需要移除旧的监听，防止多次绑定
+        const newCommentIcon = commentIcon.cloneNode(true);
+        commentIcon.parentNode.replaceChild(newCommentIcon, commentIcon);
+
+        newCommentIcon.onclick = () => {
+            igCommentsPage.style.display = "flex";
+            
+            // 如果是第一次进来，加载评论数据
+            if (igPost2Comments.length === 0) {
+                igCommentList.innerHTML = `<div class="empty-tip" style="padding:20px; color:#71767b; text-align:center;">加载评论中...</div>`;
+                setTimeout(() => {
+                    igPost2Comments = [
+                        {
+                            name: "GG爆",
+                            id: "@cidfxe",
+                            avatar: "https://s1.imagehub.cc/images/2026/10/27/d15b6fdfa2b1ab6d87df76e89f59be6c.png", // 用的同一个路人头像
+                            text: "让韩大山喝",
+                            clickable: false
+                        },
+                        {
+                            name: "oinyourheart",
+                            id: "@oo",
+                            avatar: "https://s1.imagehub.cc/images/2026/10/26/1bb64f1194ef5f347457e8d2e15bd42b.png", // user头像
+                            text: "今天无山 今天是女孩日",
+                            clickable: false
+                        },
+                        {
+                            name: "mountain",
+                            id: "@taesan",
+                            avatar: "https://s1.imagehub.cc/images/2026/10/27/182459318295fa79a2999dc9bba7fa17.jpg", // char头像
+                            text: "我点的couple day呢",
+                            clickable: true,
+                            prefill: "你还想要多少个",
+                            isChar: true
+                        }
+                    ];
+                    renderIgPost2Comments();
+                }, 2000);
+            } else {
+                renderIgPost2Comments();
+            }
+        };
+    }
+
+    function renderIgPost2Comments() {
+        igCommentList.innerHTML = "";
+        
+        if (igPost2Comments.length === 0) return;
+
+        igPost2Comments.forEach(comment => {
+            const div = document.createElement("div");
+            div.className = "ig-comment-item";
+            
+            // 回复判断缩进
+            const isReply = comment.isReply || false;
+            const indentStyle = isReply ? "margin-left: 44px;" : "";
+            
+            // 点击整条评论触发回复
+            div.onclick = () => {
+                // 如果可点击，则预填文字
+                if (comment.clickable) {
+                    igCommentInput.value = comment.prefill;
+                    igCommentSend.disabled = false;
+                    currentIgPost2Target = comment; // 记录当前点的是哪条
+                } else {
+                    // 如果点击的是不可点击的，恢复默认状态
+                    igCommentInput.value = "";
+                    igCommentInput.placeholder = "你觉得怎么样？";
+                    igCommentSend.disabled = true;
+                    currentIgPost2Target = null;
+                }
+            };
+
+            div.innerHTML = `
+                <div class="ig-comment-head" style="${indentStyle}">
+                    <img class="ig-comment-avatar" src="${comment.avatar}">
+                    <div class="ig-comment-content">
+                        <div class="ig-comment-name-row">
+                            <span class="ig-comment-name">${comment.name}</span>
+                            ${comment.isChar ? '<span class="ig-comment-verified">✔</span>' : ''}
+                            <span class="ig-comment-time">刚刚</span>
+                        </div>
+                        <div class="ig-comment-text">${comment.text}</div>
+                        <div class="ig-comment-meta">
+                            <span class="ig-comment-reply-btn">回复</span>
+                        </div>
+                    </div>
+                    <div class="ig-comment-right">
+                        <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                        <span>1</span>
+                    </div>
+                </div>
+            `;
+            igCommentList.appendChild(div);
+        });
+        
+        igCommentsScroll.scrollTop = igCommentsScroll.scrollHeight;
+    }
+
+    // 专门处理 IG 第二条图文的发送逻辑
+    function handleIgPost2Send(txt) {
+        // 先添加用户发出的评论
+        igPost2Comments.push({
+            name: "oinyourheart",
+            id: "@oo",
+            avatar: "https://s1.imagehub.cc/images/2026/10/26/1bb64f1194ef5f347457e8d2e15bd42b.png",
+            text: txt,
+            isReply: true,
+            clickable: false
+        });
+        renderIgPost2Comments();
+
+        if (igPost2Step === 0 && txt === "你还想要多少个") {
+            igPost2Step = 1;
+            // 2秒后刷出 P2 里的三条回复
+            setTimeout(() => {
+                igPost2Comments.push({
+                    name: "mountain",
+                    id: "@taesan",
+                    avatar: "https://s1.imagehub.cc/images/2026/10/27/182459318295fa79a2999dc9bba7fa17.jpg",
+                    text: "一年365个",
+                    isReply: true,
+                    clickable: false // 这条不能回
+                });
+                igPost2Comments.push({
+                    name: "我不是拉子",
+                    id: "@raau",
+                    avatar: "https://s1.imagehub.cc/images/2026/10/28/6c2f0f08806211f8d667b7db6a0223fa.jpg", // 拉子的头像
+                    text: "拿根绳子给你俩拴在一块得了",
+                    isReply: true,
+                    clickable: false
+                });
+                igPost2Comments.push({
+                    name: "mountain",
+                    id: "@taesan",
+                    avatar: "https://s1.imagehub.cc/images/2026/10/27/182459318295fa79a2999dc9bba7fa17.jpg",
+                    text: "你们几个应该谢谢我 我用我的孤独成全了你们的女孩日 我好伟大啊",
+                    isReply: true,
+                    clickable: true, // 这条可以回！第二次互动
+                    prefill: "啾啾啾 狗狗过来",
+                    isChar: true
+                });
+                renderIgPost2Comments();
+            }, 2000);
+        } else if (igPost2Step === 1 && txt === "啾啾啾 狗狗过来") {
+            igPost2Step = 2;
+            // 2秒后刷出最后一条回复
+            setTimeout(() => {
+                igPost2Comments.push({
+                    name: "mountain",
+                    id: "@taesan",
+                    avatar: "https://s1.imagehub.cc/images/2026/10/27/182459318295fa79a2999dc9bba7fa17.jpg",
+                    text: "不去^^",
+                    isReply: true,
+                    clickable: false // 结束，不可点击
+                });
+                renderIgPost2Comments();
+            }, 2000);
+        }
+    }
+
+    // 监听评论发送键
+    igCommentSend.onclick = () => {
+        const txt = igCommentInput.value.trim();
+        if (!txt) return;
+
+        // 判断当前是在哪个评论区（如果是通过个人主页第二条进来的，执行特定逻辑）
+        if (igPostPage.style.display === "flex" && document.getElementById("igPostCaption").innerText === "不好喝") {
+            handleIgPost2Send(txt);
+            
+            // 重置输入框
+            igCommentInput.value = "";
+            igCommentInput.placeholder = "你觉得怎么样？";
+            igCommentSend.disabled = true;
+            if (currentIgPost2Target) {
+                currentIgPost2Target.clickable = false; // 只要点过一次回复，就失效
+                currentIgPost2Target = null;
+            }
+        } else {
+            // 走正常的首页推文互动逻辑
+            if (igCharReplyStep === 0) {
+                igCommentsData.push({
+                    id: "user",
+                    name: "oinyourheart",
+                    avatar: "https://s1.imagehub.cc/images/2026/10/26/1bb64f1194ef5f347457e8d2e15bd42b.png",
+                    text: txt,
+                    isUser: true
+                });
+                igCommentInput.value = "";
+                igCommentSend.disabled = true;
+                renderIgComments();
+
+                setTimeout(() => {
+                    igCommentsData.push({
+                        id: "char",
+                        name: "mountain",
+                        avatar: "https://s1.imagehub.cc/images/2026/10/27/182459318295fa79a2999dc9bba7fa17.jpg",
+                        text: "@oinyourheart 狗",
+                        isUser: false
+                    });
+                    renderIgComments();
+                    
+                    igCommentInput.value = "滚";
+                    igCommentSend.disabled = false;
+                    igCharReplyStep = 1;
+                }, 2000);
+            } else if (igCharReplyStep === 1) {
+                igCommentsData.push({
+                    id: "user",
+                    name: "oinyourheart",
+                    avatar: "https://s1.imagehub.cc/images/2026/10/26/1bb64f1194ef5f347457e8d2e15bd42b.png",
+                    text: txt,
+                    isUser: true,
+                    isReply: true
+                });
+                igCommentInput.value = "";
+                igCommentSend.disabled = true;
+                renderIgComments();
+
+                setTimeout(() => {
+                    igCommentsData.push({
+                        id: "char",
+                        name: "mountain",
+                        avatar: "https://s1.imagehub.cc/images/2026/10/27/182459318295fa79a2999dc9bba7fa17.jpg",
+                        text: "@oinyourheart 亲亲",
+                        isUser: false
+                    });
+                    renderIgComments();
+                    igCommentInput.value = "";
+                    igCommentSend.disabled = true;
+                    igCharReplyStep = 2;
+                }, 2000);
+            }
+        }
+    };
+
+
+    // 统一返回桌面方法
+    function backToDesktop() {
+        chatFullPage.style.display = "none";
+        xFullPage.style.display = "none";
+        xComposePage.style.display = "none";
+        xDetailPage.style.display = "none";
+        igFullPage.style.display = "none";
+        igProfilePage.style.display = "none";
+        igPostPage.style.display = "none";
+        igCommentsPage.style.display = "none";
+        cameraPage.style.display = "none";
+        photosPage.style.display = "none";
+        remindersPage.style.display = "none";
+        musicPage.style.display = "none";
+    }
+
+    document.querySelectorAll("[data-app]").forEach(el=>{
+        el.onclick = ()=>{
+            const key = el.dataset.app;
+            if(key === "chat"){ openChat(); return; }
+            if(key === "x"){
+                xFullPage.style.display = "flex";
+                xDetailPage.style.display = "none";
+                xComposePage.style.display = "none";
+                renderTweets(); // 打开时渲染推文
+                return;
+            }
+            if(key === "ins"){
+                backToDesktop();
+                igProfilePage.style.display = "flex";
+                igBadge.style.display = "none";
+                return;
+            }
+            if(key === "camera"){
+                backToDesktop();
+                cameraPage.style.display = "flex";
+                return;
+            }
+            if(key === "photo"){
+                backToDesktop();
+                photosPage.style.display = "flex";
+                return;
+            }
+            if(key === "reminder"){
+                backToDesktop();
+                remindersPage.style.display = "flex";
+                return;
+            }
+            if(key === "music"){
+                backToDesktop();
+                musicPage.style.display = "flex";
+                return;
+            }
+            const info = appData[key];
+            if(info) {
+                winTitle.innerText = info.title;
+                winContent.innerHTML = info.html;
+                mask.style.display = "flex";
+            }
+        }
+    })
+
+    chatNotifyPopup.onclick = ()=>{
+        chatNotifyPopup.classList.remove("show");
+        xDetailPage.style.display = "none";
+        xFullPage.style.display = "none";
+        chatBadge.style.display = "none";
+        openChat();
+        startRound2();
+    };
+
+    // IG 通知点击后，打开 IG 推文页面
+    igNotifyPopup.onclick = ()=>{
+        igNotifyPopup.classList.remove("show");
+        backToDesktop();
+        igFullPage.style.display = "flex";
+        igBadge.style.display = "none";
+        
+        // 标记进入第三段对话的准备阶段，并修正起点时间为 16:00
+        if (currentRound === 1) {
+            currentRound = 2;
+            chatGroups = chatRound3;
+            groupIndex = 0;
+            currentTime = new Date(2025,0,1,16,0,0); // 修正为 16:00
+            msgCount = 0;
+            chatInput.value = chatRound3[0].u;
+            chatInput.style.fontSize = "14px";
+            chatInput.style.color = "#fff";
+            sendBtn.disabled = chatInput.value.trim() === "";
+        }
+    };
+
+    xCompose.onclick = ()=>{
+        xComposePage.style.display = "flex";
+        if (!userTweetPosted) {
+            composeInput.value = "每天一打开相册看到的都是韩大山的脸这相册这辈子有了根本 不知道是什么时候拍的不是男友是黑客入侵我的相册";
+            composePostBtn.classList.add("active");
+        } else {
+            composeInput.value = "";
+            composePostBtn.classList.remove("active");
+        }
+        composeInput.focus();
+    };
+
+    // 原推文评论监听
+    replyInput.oninput = ()=>{
+        replyInput.style.fontSize = "14px";
+        replyInput.style.color = "#fff";
+        replySend.disabled = replyInput.value.trim() === "";
+    };
+
+    replySend.onclick = ()=>{
+        const txt = replyInput.value.trim();
+        if(!txt) return;
+        
+        // 把新评论加到数据里，持久保存
+        currentDetailTweet.customComments.push({
+            name: "o公主",
+            id: "@oinyourheart",
+            text: txt,
+            avatar: "https://s1.imagehub.cc/images/2026/10/26/1bb64f1194ef5f347457e8d2e15bd42b.png",
+            isChar: false
+        });
+
+        // 重新渲染，这样关闭再打开依然存在
+        renderDetailComments();
+        
+        replyInput.value = "";
+        replyInput.style.fontSize = "14px";
+        replyInput.style.color = "#fff";
+        replySend.disabled = true;
+        replyWrap.style.display = "none";
+        
+        const actCommentNum = document.getElementById("actCommentNum");
+        if (actCommentNum) {
+            actCommentNum.textContent = currentDetailTweet.comments + currentDetailTweet.customComments.length;
+        }
+        document.getElementById("commentContainer").scrollTop = document.getElementById("commentContainer").scrollHeight;
+
+        if(replyingToChar && !currentDetailTweet.isCustom && !hasRepliedToChar){
+            hasRepliedToChar = true;
+            setTimeout(()=>{
+                // 把 char 的回复持久保存到 customComments
+                currentDetailTweet.customComments.push({
+                    name: "帅气风暴",
+                    id: "@mountain",
+                    text: "小的必须竭尽全力伺候好公主大人",
+                    avatar: "https://s1.imagehub.cc/images/2026/10/27/182459318295fa79a2999dc9bba7fa17.jpg",
+                    isChar: true
+                });
+                // 重新渲染评论列表（这样退出重进依然在）
+                renderDetailComments();
+
+                // 更新评论数
+                const numEl = document.getElementById("actCommentNum");
+                if (numEl) {
+                    numEl.textContent = currentDetailTweet.comments + currentDetailTweet.customComments.length;
+                }
+                document.getElementById("detailScroll").scrollTop = document.getElementById("detailScroll").scrollHeight;
+
+                setTimeout(()=>{
+                    chatBadge.style.display = "flex";
+                    requestAnimationFrame(()=>{ chatNotifyPopup.classList.add("show"); });
+                }, 2000);
+            }, 2000);
+        }
+        replyingToChar = false;
+    };
+
+    notifyPopup.addEventListener("click", function(e){
+        if(e.target === popupClose) return;
+        notifyPopup.classList.remove("show");
+        setTimeout(() => { xFullPage.style.display = "flex"; xDetailPage.style.display = "none"; }, 250);
+    });
+    popupClose.addEventListener("click", (e)=>{ e.stopPropagation(); notifyPopup.classList.remove("show"); });
+
+    chatBack.onclick = backToDesktop;
+    xBack.onclick = backToDesktop;
+    xSettings.onclick = ()=>{ alert("菜单"); };
+    
+    // 点击返回时，刷新推文列表
+    detailBack.onclick = ()=>{ 
+        xDetailPage.style.display = "none"; 
+        renderTweets(); // 刷新首页数据
+    };
+
+    closeBtn.onclick = ()=> mask.style.display = "none";
+    mask.onclick = (e)=>{ if(e.target === mask) mask.style.display = "none"; };
+
+    // 相机 & 相册 & 备忘录 & 音乐 关闭按钮
+    camBackBtn.onclick = backToDesktop;
+    photosClose.onclick = backToDesktop;
+    photosDone.onclick = backToDesktop;
+    remBackBtn.onclick = backToDesktop;
+    remDoneBtn.onclick = backToDesktop;
+    musicBackBtn.onclick = backToDesktop;
+
+    // IG 帖子数据
+    const igPostsData = [
+        { img: "https://s1.imagehub.cc/images/2026/10/28/da09a8876f9d9ec15459dda742da41b2.jpg", text: "Then i say yes" },
+        { img: "https://s1.imagehub.cc/images/2026/10/28/87b2dc536258342333eeb7a29efde9e7.jpg", text: "不好喝" }
+    ];
+
+    document.querySelectorAll(".ig-post-clickable").forEach(item => {
+        item.onclick = () => {
+            const idx = parseInt(item.dataset.idx) || 0;
+            
+            if (idx === 0) {
+                // 第一条帖子：Then i say yes
+                document.getElementById("igPostImg").src = igPostsData[0].img;
+                document.getElementById("igPostCaption").innerHTML = igPostsData[0].text;
+                igPostPage.style.display = "flex";
+
+                // 第一条图文不能评论：把评论图标替换成一个不带事件的克隆
+                const oldIcon = igPostPage.querySelector('.ig-post-actions svg:nth-child(2)');
+                const cleanIcon = oldIcon.cloneNode(true);
+                oldIcon.parentNode.replaceChild(cleanIcon, oldIcon);
+            } else if (idx === 1) {
+                // 第二条帖子：不好喝（走专门的互动逻辑）
+                openIgPost2();
+            }
+        };
+    });
+    
+    igPostBack.onclick = ()=>{ 
+        igPostPage.style.display = "none"; 
+        igProfilePage.style.display = "flex"; 
+    };
+    
+    igFeedBack.onclick = backToDesktop;
+    igProfileBack.onclick = backToDesktop;
+
+    document.querySelectorAll(".house-btn").forEach(btn => {
+        btn.onclick = () => {
+            if (!igUnlocked) return;
+            document.querySelectorAll(".ig-full-page").forEach(p => p.style.display = "none");
+            igFullPage.style.display = "flex";
+            igPostPage.style.display = "none";
+            igCommentsPage.style.display = "none";
+        };
+    });
+
+    document.querySelectorAll(".profile-btn").forEach(btn => {
+        btn.onclick = () => {
+            document.querySelectorAll(".ig-full-page").forEach(p => p.style.display = "none");
+            igProfilePage.style.display = "flex";
+            igPostPage.style.display = "none";
+            igCommentsPage.style.display = "none";
+        };
+    });
+</script>
+
+</body>
+</html>

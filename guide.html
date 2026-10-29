@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+<title>食用指南 · 备忘录</title>
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        -webkit-font-smoothing: antialiased;
+    }
+
+    html, body {
+        height: 100%;
+        width: 100%;
+        background: #1a1a1a; /* 桌面深色背景 */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        overflow: hidden;
+    }
+
+    /* 模拟手机屏幕框架 */
+    .phone {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        max-width: 420px; /* 在电脑上限制最大宽度，像手机一样 */
+        background: #fff;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+    }
+
+    /* ========== 备忘录（Reminders）样式 ========== */
+    .reminders-page {
+        position: absolute; inset: 0; background: #fff; display: flex; flex-direction: column;
+        padding-top: env(safe-area-inset-top); padding-bottom: env(safe-area-inset-bottom); color: #000;
+    }
+    
+    .rem-topbar {
+        display: flex; justify-content: space-between; align-items: center; padding: 16px 20px;
+    }
+    
+    .rem-back-btn {
+        font-size: 17px; color: #e5b000; display: flex; align-items: center; gap: 4px; cursor: pointer; font-weight: 500;
+    }
+    
+    .rem-top-right { display: flex; gap: 16px; align-items: center; }
+    
+    .rem-icon { width: 24px; height: 24px; fill: #e5b000; cursor: pointer; }
+    
+    .rem-done-btn { font-size: 17px; color: #e5b000; font-weight: 600; cursor: pointer; margin-left: 8px; }
+    
+    .rem-content {
+        flex: 1; padding: 10px 20px 40px; overflow-y: auto; font-size: 16px; line-height: 1.7; color: #222;
+        position: relative;
+    }
+    
+    .rem-cursor {
+        width: 2px; height: 22px; background: #e5b000; position: absolute; left: 16px; top: 12px;
+        animation: blink 1s step-end infinite;
+    }
+    @keyframes blink { 50% { opacity: 0; } }
+    
+    /* 文本排版 */
+    .rem-text { 
+        margin-left: 14px; 
+        white-space: pre-wrap; 
+        text-align: justify; 
+    }
+    
+    .rem-text b {
+        font-weight: 600;
+        color: #000;
+    }
+    
+    .rem-text .highlight {
+        color: #e5b000;
+        font-weight: 600;
+    }
+    
+    /* 隐藏滚动条 */
+    .rem-content::-webkit-scrollbar { display: none; }
+</style>
+</head>
+<body>
+
+<div class="phone">
+    <div class="reminders-page">
+        <!-- 顶部导航栏 -->
+        <div class="rem-topbar">
+            <div class="rem-back-btn">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#e5b000" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="margin-right:2px;">
+                    <path d="M15 18l-6-6 6-6"/>
+                </svg>
+                所有 iCloud
+            </div>
+            <div class="rem-top-right">
+                <!-- 两个顶部图标 -->
+                <svg class="rem-icon" viewBox="0 0 24 24"><path d="M16 5l-1.42 1.42-1.59-1.59V16h-1.98V4.83L9.42 6.42 8 5l4-4 4 4zm4 5v11c0 1.1-.9 2-2 2H6c-1.11 0-2-.9-2-2V10c0-1.11.89-2 2-2h3v2H6v11h12V10h-3V8h3c1.1 0 2 .89 2 2z"/></svg>
+                <svg class="rem-icon" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/></svg>
+                <div class="rem-done-btn">完成</div>
+            </div>
+        </div>
+        
+        <!-- 文本内容区 -->
+        <div class="rem-content">
+            <div class="rem-cursor"></div>
+            <div class="rem-text"><b>食用指南：</b>
+首次食用优先开🪜
+music播放off my face搭配食用效果更佳
+
+chat红点开启第一个互动点
+第二个互动点为X推文弹窗 回复char评论即可进入第三个互动点
+第三个互动点为chat弹窗 
+第四个互动点为Instagram弹窗
+第五个互动点为回复Instagram首页推文后返回chat进行对话与视频
+
+<b>自由互动点：</b>
+Instagram个人主页第一条可打开图文 第一条可评论互动
+X可发送一条推文 与相册相联系
+第五个互动点结束后可自由发信息 内置关键词</div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
