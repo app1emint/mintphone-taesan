@@ -1,5 +1,5 @@
 <!--
-项目主页：https://github.com/app1emint/mintphone
+项目主页：https://github.com/app1emint/mintphone-taesan
 小红书：6956837599
 UI由【app1emint】设计 
 允许二改、学习分享 二次分发请保留署名与协议
@@ -10,6 +10,7 @@ UI由【app1emint】设计
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
 <title>mintphone-taesan</title>
+<link rel="manifest" href="./manifest.json">
 <style>
     * {
         margin: 0;
@@ -488,7 +489,9 @@ UI由【app1emint】设计
     .ig-feed-post-img{ width:100%; aspect-ratio:3/4; background:#111; position:relative; }
     .ig-feed-post-img img{ width:100%; height:100%; object-fit:cover; display:block; }
     
+    /* 💡 修复 Instagram 详情页/首页图标巨大化问题 */
     .ig-post-actions{ display:flex; align-items:center; padding:8px 12px; gap:18px; fill:#fff;}
+    .ig-post-actions svg { width: 26px; height: 26px; }
     .ig-post-actions .save-icon{ margin-left:auto; }
     .ig-post-likes{ padding:0 16px; font-size:14px; font-weight:600; }
     .ig-post-caption{ padding:8px 16px 0; font-size:14px; line-height:1.4; }
